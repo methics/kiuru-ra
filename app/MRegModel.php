@@ -12,8 +12,8 @@ class MRegModel
 {
 
     private $url = "https://mssp.demo.methics.fi/rest/service";
-    private $username = "eemeli";
-    private $password = "yellowrunninglion";
+    private $username = "";
+    private $password = "";
 
     public function GetMobileUserData($msisdn){
 

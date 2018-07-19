@@ -11,11 +11,21 @@ use GuzzleHttp\Client;
 class MRegModel
 {
 
-    private $url = "https://mssp.demo.methics.fi/rest/service";
-    private $username = "";
-    private $password = "";
+    private $url;
+    private $username;
+    private $password;
+
+    public function __construct(){
+        $this->url      = env("API_URL");
+        $this->username = env("API_USER");
+        $this->password = env("API_PASS");
+    }
+
+
 
     public function GetMobileUserData($msisdn){
+
+
 
         $string_json = "{
           \"MSS_RegistrationReq\": {

@@ -14,10 +14,17 @@
 //page routes
 Route::get("/","PagesController@index");
 Route::get("/register","PagesController@registration");
+Route::get("/lookup","PagesController@lookup")->name("lookup");
+
 
 //MReg routes
 Route::post("/","MRegController@CreateMobileUser");
+Route::post("/look","MRegController@LookupUser");
+
+Route::get("/deactivate/{msisdn}","MRegController@DeactivateMobileUser");
+Route::get("/testsignature/{msisdn}","MRegController@TestSignature");
 
 //for testing
 Route::get("user/{msisdn}","MRegController@GetUserDataByMsisdn");
 Route::get("usercheck/{msisdn}", "MRegController@CheckIfUserExists");
+Route::get("activate/{msisdn}","MRegController@ActivateMobileUser");

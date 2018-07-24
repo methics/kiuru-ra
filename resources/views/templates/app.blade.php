@@ -13,7 +13,7 @@
 <body>
 @include("inc.navbar")
 
-<div class="container" style="margin-top: 150px;">
+<div class="container-fluid" style="margin-top: 150px;">
     @yield("content")
 </div>
 

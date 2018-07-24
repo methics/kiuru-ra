@@ -10469,9 +10469,16 @@ a.text-dark:focus {
   }
 }
 
-.navbar-laravel {
+body {
   background-color: #fff;
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.navbar-methics {
+  background-color: #f7f7f7;
+}
+
+.nav-link {
+  color: #670067;
+  font-size: 18px;
 }
 

@@ -1,0 +1,16 @@
+$body-bg: #fff;
+$primary-color: darken(purple, 5%);
+
+
+body{
+  background-color: $body-bg;
+}
+
+.navbar-methics{
+  background-color: darken(#fff,3%);
+
+}
+.nav-link{
+  color: $primary-color;
+  font-size: 18px;
+}

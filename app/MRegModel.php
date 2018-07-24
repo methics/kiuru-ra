@@ -15,6 +15,8 @@ class MRegModel
     private $username;
     private $password;
 
+    private $client;
+
     public function __construct(){
         $this->url      = env("API_URL");
         $this->username = env("API_USER");
@@ -24,8 +26,6 @@ class MRegModel
 
 
     public function GetMobileUserData($msisdn){
-
-
 
         $string_json = "{
           \"MSS_RegistrationReq\": {
@@ -123,11 +123,146 @@ class MRegModel
 
     }
 
-    public function ActivateMobileUser(){
+    public function ActivateMobileUser($msisdn){
 
-        $string_json = "";
+        $string_json = "{
+	\"MSS_RegistrationReq\": {
+		\"User\": {
+			\"Role\": \"enduser\"
+		},
+		\"UseCase\": {
+			\"Name\": \"mids:ActivateMobileUser\",
+			\"Inputs\": [{
+				\"Name\": \"targetmsisdn\",
+				\"Value\": \"$msisdn\"
+			}]
+		}
+	}
+}";
+
+
+        $client = new Client();
+        $options = array(
+            "auth" => [
+                $this->username,
+                $this->password
+            ],
+            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
+            "body" => $string_json,
+            "debug" => false
+        );
+
+        $res = $client->request("POST",$this->url,$options);
+        $body = $res->getBody(); //gets json string
+        return $body;
 
     }
+
+
+    public function GetSimCardData($msisdn){
+
+        $string_json = "{
+            \"MSS_RegistrationReq\": {
+                \"User\": {
+                    \"Role\": \"enduser\"
+                },
+                \"UseCase\": {
+                    \"Name\": \"mids:GetSimCard\",
+                    \"Inputs\": [{
+                        \"Name\": \"targetmsisdn\",
+                        \"Value\": \"$msisdn\"
+                    }]
+                }
+            }
+        }";
+
+        $client = new Client();
+        $options = array(
+            "auth" => [
+                $this->username,
+                $this->password
+            ],
+            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
+            "body" => $string_json,
+            "debug" => false
+        );
+
+        $res = $client->request("POST",$this->url,$options);
+        $body = $res->getBody(); //gets json string
+        return $body;
+
+    }
+
+    public function DeactivateUser($msisdn){
+        $string_json = "{
+            \"MSS_RegistrationReq\": {
+                \"User\": {
+                    \"Role\": \"enduser\"
+                },
+                \"UseCase\": {
+                    \"Name\": \"mids:DeactivateMobileUser\",
+                    \"Inputs\": [{
+                        \"Name\": \"targetmsisdn\",
+                        \"Value\": \"$msisdn\"
+                    }]
+                }
+            }
+        }";
+
+        $client = new Client();
+        $options = array(
+            "auth" => [
+                $this->username,
+                $this->password
+            ],
+            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
+            "body" => $string_json,
+            "debug" => false
+        );
+
+        $res = $client->request("POST",$this->url,$options);
+        $body = $res->getBody(); //gets json string
+        return $body;
+
+    }
+
+    public function TestSignature($msisdn){
+        $string_json = "{
+            \"MSS_SignatureReq\": {
+                \"AP_Info\": {},
+                \"MobileUser\": {
+                    \"MSISDN\": \"$msisdn\"
+                },
+                \"MessagingMode\": \"synch\",
+                \"DataToBeSigned\": {
+                    \"MimeType\": \"text/plain\",
+                    \"Encoding\": \"UTF-8\",
+                    \"Data\": \"Mobile ID test\"
+                },
+                \"SignatureProfile\": \"http://alauda.mobi/digitalSignature\",
+                \"AdditionalServices\": [{
+                    \"Description\": \"http://uri.etsi.org/TS102204/v1.1.2#validate\"
+                }]
+            }
+        }";
+
+        $client = new Client();
+        $options = array(
+            "auth" => [
+                $this->username,
+                $this->password
+            ],
+            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
+            "body" => $string_json,
+            "debug" => false
+        );
+
+        $res = $client->request("POST",$this->url,$options);
+        $body = $res->getBody(); //gets json string
+        return $body;
+
+    }
+
 
 
 

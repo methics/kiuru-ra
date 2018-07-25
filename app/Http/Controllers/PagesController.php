@@ -7,9 +7,7 @@ use Illuminate\Http\Request;
 class PagesController extends Controller
 {
     public function index(){
-
         return view("pages.index");
-
     }
 
     public function registration(){
@@ -18,6 +16,10 @@ class PagesController extends Controller
 
     public function lookup(){
         return view("pages.lookup");
+    }
+
+    public function AdminDashboard(){
+        return view("pages.dashboard");
     }
 
 }

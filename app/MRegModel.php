@@ -126,19 +126,19 @@ class MRegModel
     public function ActivateMobileUser($msisdn){
 
         $string_json = "{
-	\"MSS_RegistrationReq\": {
-		\"User\": {
-			\"Role\": \"enduser\"
-		},
-		\"UseCase\": {
-			\"Name\": \"mids:ActivateMobileUser\",
-			\"Inputs\": [{
-				\"Name\": \"targetmsisdn\",
-				\"Value\": \"$msisdn\"
-			}]
-		}
-	}
-}";
+            \"MSS_RegistrationReq\": {
+                \"User\": {
+                    \"Role\": \"enduser\"
+                },
+                \"UseCase\": {
+                    \"Name\": \"mids:ActivateMobileUser\",
+                    \"Inputs\": [{
+                        \"Name\": \"targetmsisdn\",
+                        \"Value\": \"$msisdn\"
+                    }]
+                }
+            }
+        }";
 
 
         $client = new Client();

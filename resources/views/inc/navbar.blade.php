@@ -10,11 +10,16 @@
                 <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/register">Registration</a>
+                <a class="nav-link" href="/registration">Registration</a>
             </li>
             <li>
                 <a class="nav-link" href="/lookup">Lookup</a>
             </li>
+            @if(Auth::check() && Auth::user()->isAdmin())
+                <li>
+                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                </li>
+            @endif
         </ul>
 
     </div>

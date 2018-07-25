@@ -13,8 +13,9 @@
 
 //page routes
 Route::get("/","PagesController@index");
-Route::get("/register","PagesController@registration");
+Route::get("/registration","PagesController@registration");
 Route::get("/lookup","PagesController@lookup")->name("lookup");
+Route::get("/dashboard","PagesController@AdminDashboard")->middleware("auth","kiuru-ra-admin");
 
 
 //MReg routes
@@ -28,3 +29,7 @@ Route::get("/testsignature/{msisdn}","MRegController@TestSignature");
 Route::get("user/{msisdn}","MRegController@GetUserDataByMsisdn");
 Route::get("usercheck/{msisdn}", "MRegController@CheckIfUserExists");
 Route::get("activate/{msisdn}","MRegController@ActivateMobileUser");
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

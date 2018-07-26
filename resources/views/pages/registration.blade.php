@@ -26,7 +26,7 @@
                 </div>
                 <div class="form-group form-control-sm">
                     {{Form::label("Language","Language")}}
-                    {{Form::text("language", "", ["class" => "form-control", "placeholder" => "fi"])}}
+                    {{Form::text("language", "", ["class" => "form-control", "placeholder" => "default"])}}
                 </div>
                 <div class="form-group form-control-sm">
                     {{Form::label("SSN","SSN")}}

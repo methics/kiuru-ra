@@ -15,7 +15,6 @@ class MRegModel
     private $username;
     private $password;
 
-    private $client;
 
     public function __construct(){
         $this->url      = env("API_URL");
@@ -23,10 +22,25 @@ class MRegModel
         $this->password = env("API_PASS");
     }
 
+    public function SendPost($string_json){
+        $client = new Client();
+        $options = array(
+            "auth" => [
+                $this->username,
+                $this->password
+            ],
+            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
+            "body" => $string_json,
+            "debug" => false
+        );
 
+        $res = $client->request("POST",$this->url,$options);
+        $body = $res->getBody(); //gets json string
+        return $body;
+
+    }
 
     public function GetMobileUserData($msisdn){
-
         $string_json = "{
           \"MSS_RegistrationReq\": {
             \"User\": {
@@ -42,24 +56,12 @@ class MRegModel
           }
         }";
 
-        $client = new Client();
-        $options = array(
-            "auth" => [
-                $this->username,
-                $this->password
-            ],
-            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
-            "body" => $string_json,
-            "debug" => false
-        );
-
-        $res = $client->request("POST",$this->url,$options);
-        $body = $res->getBody(); //gets json string
+        $body = $this->SendPost($string_json);
         return $body;
     }
 
-    public function CreateMobileUser($msisdn,$fname,$lname,$lang,$ssn,$address,$address2,$city,$stateOrProvince,$postalcode,$country){
-
+    public function CreateMobileUser($info){
+        $data = (object)$info;
         $string_json = "{
             \"MSS_RegistrationReq\": {
                 \"User\": {
@@ -69,58 +71,45 @@ class MRegModel
                     \"Name\": \"mids:CreateMobileUser\",
                     \"Inputs\": [{
                         \"Name\": \"msisdn\",
-                        \"Value\": \"$msisdn\"
+                        \"Value\": \"$data->msisdn\"
                     }, {
                         \"Name\": \"givenName\",
-                        \"Value\": \"$fname\"
+                        \"Value\": \"$data->fname\"
                     }, {
                         \"Name\": \"surName\",
-                        \"Value\": \"$lname\"
+                        \"Value\": \"$data->lname\"
                     }, {
                         \"Name\": \"Language\",
-                        \"Value\": \"$lang\"
+                        \"Value\": \"$data->ssn\"
                     }, {
                         \"Name\": \"hetu\",
-                        \"Value\": \"$ssn\"
+                        \"Value\": \"$data->ssn\"
                     }, {
                         \"Name\": \"AddressLine1\",
-                        \"Value\": \"$address\"
+                        \"Value\": \"$data->address\"
                     }, {
                         \"Name\": \"AddressLine2\",
-                        \"Value\": \"$address2\"
+                        \"Value\": \"$data->address2\"
                     }, {
                         \"Name\": \"City\",
-                        \"Value\": \"$city\"
+                        \"Value\": \"$data->city\"
                     }, {
                         \"Name\": \"StateOrProvince\",
-                        \"Value\": \"$stateOrProvince\"
+                        \"Value\": \"$data->stateorprovince\"
                     }, {
                         \"Name\": \"ZipCode\",
-                        \"Value\": \"$postalcode\"
+                        \"Value\": \"$data->postalcode\"
                     }, {
                         \"Name\": \"Country\",
-                        \"Value\": \"$country\"
+                        \"Value\": \"$data->country\"
                     }
                     ]
                 }
             }
         }";
 
-        $client = new Client();
-        $options = array(
-            "auth" => [
-                $this->username,
-                $this->password
-            ],
-            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
-            "body" => $string_json,
-            "debug" => false
-        );
-
-        $res = $client->request("POST",$this->url,$options);
-        $body = $res->getBody(); //gets json string
+        $body = $this->SendPost($string_json);
         return $body;
-
     }
 
     public function ActivateMobileUser($msisdn){
@@ -140,27 +129,11 @@ class MRegModel
             }
         }";
 
-
-        $client = new Client();
-        $options = array(
-            "auth" => [
-                $this->username,
-                $this->password
-            ],
-            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
-            "body" => $string_json,
-            "debug" => false
-        );
-
-        $res = $client->request("POST",$this->url,$options);
-        $body = $res->getBody(); //gets json string
+        $body = $this->SendPost($string_json);
         return $body;
-
     }
 
-
     public function GetSimCardData($msisdn){
-
         $string_json = "{
             \"MSS_RegistrationReq\": {
                 \"User\": {
@@ -176,21 +149,8 @@ class MRegModel
             }
         }";
 
-        $client = new Client();
-        $options = array(
-            "auth" => [
-                $this->username,
-                $this->password
-            ],
-            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
-            "body" => $string_json,
-            "debug" => false
-        );
-
-        $res = $client->request("POST",$this->url,$options);
-        $body = $res->getBody(); //gets json string
+        $body = $this->SendPost($string_json);
         return $body;
-
     }
 
     public function DeactivateUser($msisdn){
@@ -209,21 +169,8 @@ class MRegModel
             }
         }";
 
-        $client = new Client();
-        $options = array(
-            "auth" => [
-                $this->username,
-                $this->password
-            ],
-            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
-            "body" => $string_json,
-            "debug" => false
-        );
-
-        $res = $client->request("POST",$this->url,$options);
-        $body = $res->getBody(); //gets json string
+        $body = $this->SendPost($string_json);
         return $body;
-
     }
 
     public function TestSignature($msisdn){
@@ -246,27 +193,7 @@ class MRegModel
             }
         }";
 
-        $client = new Client();
-        $options = array(
-            "auth" => [
-                $this->username,
-                $this->password
-            ],
-            "headers" => ["content-type" => "application/json", "Accept" => "application/json"],
-            "body" => $string_json,
-            "debug" => false
-        );
-
-        $res = $client->request("POST",$this->url,$options);
-        $body = $res->getBody(); //gets json string
+        $body = $this->SendPost($string_json);
         return $body;
-
     }
-
-
-
-
-
-
-
 }

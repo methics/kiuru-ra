@@ -7,7 +7,7 @@
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="/">Home</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/registration">Registration</a>
@@ -15,11 +15,30 @@
             <li>
                 <a class="nav-link" href="/lookup">Lookup</a>
             </li>
-            @if(Auth::check() && Auth::user()->isAdmin())
+
+            @role("kiuru-ra-admin")
                 <li>
-                    <a class="nav-link" href="/dashboard">Dashboard</a>
+                    <a class="nav-link" href="/users">Admin</a>
                 </li>
-            @endif
+            @endrole
+
+
+
+        </ul>
+        <!-- Right Side Of Navbar -->
+        <ul class="navbar-nav ml-auto">
+            <!-- Authentication Links -->
+            @guest
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+                </li>
+
+            @else
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route("logout") }}">Logout</a>
+                </li>
+
+            @endguest
         </ul>
 
     </div>

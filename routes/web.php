@@ -12,24 +12,31 @@
 */
 
 //page routes
-Route::get("/","PagesController@index");
-Route::get("/registration","PagesController@registration");
-Route::get("/lookup","PagesController@lookup")->name("lookup");
-Route::get("/dashboard","PagesController@AdminDashboard")->middleware("auth","kiuru-ra-admin");
+Route::get("/","PagesController@index")->middleware("auth");
+Route::get("/registration","PagesController@registration")->middleware("auth","clearance");
+Route::get("/lookup","PagesController@lookup")->name("lookup")->middleware("auth","clearance");
 
 
 //MReg routes
-Route::post("/","MRegController@CreateMobileUser");
-Route::post("/look","MRegController@LookupUser");
-
-Route::get("/deactivate/{msisdn}","MRegController@DeactivateMobileUser");
-Route::get("/testsignature/{msisdn}","MRegController@TestSignature");
+Route::post("/","MRegController@CreateMobileUser")->middleware("auth");
+Route::post("/userinfo","MRegController@LookupUser")->middleware("auth");
+Route::get("/deactivate/{msisdn}","MRegController@DeactivateMobileUser")->middleware("auth");
+Route::get("/testsignature/{msisdn}","MRegController@TestSignature")->middleware("auth");
 
 //for testing
-Route::get("user/{msisdn}","MRegController@GetUserDataByMsisdn");
-Route::get("usercheck/{msisdn}", "MRegController@CheckIfUserExists");
-Route::get("activate/{msisdn}","MRegController@ActivateMobileUser");
+Route::get("user/{msisdn}","MRegController@GetUserDataByMsisdn")->middleware("auth");
+Route::get("usercheck/{msisdn}", "MRegController@CheckIfUserExists")->middleware("auth");
+Route::get("activate/{msisdn}","MRegController@ActivateMobileUser")->middleware("auth");
 
-Auth::routes();
+//Auth::routes();
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');//fix
 
-Route::get('/home', 'HomeController@index')->name('home');
+
+Route::resource("users","UserController")->middleware("auth");
+Route::resource("roles","RoleController")->middleware("auth");
+Route::resource("permissions","PermissionController")->middleware("auth");
+
+
+

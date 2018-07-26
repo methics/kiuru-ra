@@ -7,9 +7,16 @@ use Illuminate\Http\Request;
 use App\MRegModel;
 use PhpParser\Error;
 use Redirect;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class MRegController extends Controller
 {
+
+    public function __construct(){
+        $this->middleware("auth");
+
+    }
 
     public function GetUserDataByMsisdn($msisdn){
         $model = new MRegModel();
@@ -20,13 +27,13 @@ class MRegController extends Controller
     public function CheckIfUserExists($msisdn){
         $data = $this->GetUserDataByMsisdn($msisdn);
         $obj = json_decode($data);
-
         if(isset($obj->Fault->Reason) && $obj->Fault->Reason == "NO_SUCH_MOBILEUSER"){
-            return 0;
+            return true;
         }else{
-            return 1;
+            return false;
         }
     }
+
 
     public function CreateMobileUser(Request $request){
         $this->validate($request,[
@@ -44,33 +51,38 @@ class MRegController extends Controller
         ]);
 
         $msisdn = $request->input("msisdn");
-        $fname = $request->input("fname");
-        $lname = $request->input("lname"); //rename to surname?
-        $lang = $request->input("language");
-        $ssn = $request->input("ssn");
-        $address = $request->input("address");
-        $address2 = $request->input("address2");
-        $city = $request->input("city");
-        $stateOrProvince = $request->input("stateorprovince");
-        $postalcode = $request->input("postalcode");
-        $country = $request->input("country");
 
-        //TODO: this cant be correct
+
+        $info = array(
+            "msisdn"            => $request->input("msisdn"),
+            "fname"             => $request->input("fname"),
+            "lname"             => $request->input("lname"),
+            "lang"              => $request->input("lang"),
+            "ssn"               => $request->input("ssn"),
+            "address"           => $request->input("address"),
+            "address2"          => $request->input("address2"),
+            "city"              => $request->input("city"),
+            "stateorprovince"   => $request->input("stateorprovince"),
+            "postalcode"        => $request->input("postalcode"),
+            "country"           => $request->input("country")
+        );
+
+
         if($this->CheckIfSimExists($msisdn) !== true){
             return view("pages.registration")->with("msg","ERROR: SIM card doesnt exist");
         }
 
-        if($this->CheckIfUserExists($msisdn) == 1){
+        if($this->CheckIfUserExists($msisdn) !== true){
             return view("pages.registration")->with("msg","ERROR: User already exists");
         }else{
 
             //create user
             $model = new MRegModel();
-            $data = $model->CreateMobileUser($msisdn,$fname,$lname,$lang,$ssn,$address,$address2,$city,$stateOrProvince,$postalcode,$country);
+            $data = $model->CreateMobileUser($info);
             $obj = json_decode($data);
 
             if(isset($obj->Fault->Reason)){
-                print_r($obj);
+                return view("pages.registration")->with("msg","ERROR: $obj->Fault->Reason");
             }else{
                 $obj = $this->ActivateMobileUser($msisdn);
 
@@ -97,7 +109,7 @@ class MRegController extends Controller
 
         $array = json_decode($data,true);
 
-        //TODO: check if string contains givenname rather than using absolute values
+        //TODO: config for this
         foreach($array["MSS_RegistrationResp"]["UseCase"]["Outputs"] as $key=>$val){
             foreach($val as $k=>$v){
                 if($v == "http://mss.ficom.fi/TS102204/v1.0.0/PersonID#givenName" || $v == "GivenName"){
@@ -117,7 +129,8 @@ class MRegController extends Controller
 
     }
 
-    /*
+
+    /*TODO: If error exists put in a variable and echo message instead of prewritten errormsg in the code
      * feed this an JSON array
      */
     public function ErrorOrNot($body){
@@ -133,7 +146,6 @@ class MRegController extends Controller
     public function ActivateMobileUser($msisdn){
         $model = new MRegModel();
         $data = $model->ActivateMobileUser($msisdn);
-
 
         return $data;
     }
@@ -162,6 +174,7 @@ class MRegController extends Controller
         }
     }
 
+    //todo: configurable through config ui
     public function TestSignature(Request $request){
         $msisdn = $request->route("msisdn");
         $model = new MRegModel();
@@ -174,7 +187,7 @@ class MRegController extends Controller
         }
 
 
-        //TODO: Finish this please
+        //TODO: Finish this
     }
 
 

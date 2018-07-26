@@ -39,3 +39,12 @@ Add variable values in .env file
 ##Database settings
 The database configuration for your application is located at config/database.php
 
+Most likely not needed since retrieving database settings from .env
+
+##Build database tables
+go to project folder and:
+
+    php artisan migrate
+    
+##Laravel-permissions library
+https://github.com/spatie/laravel-permission

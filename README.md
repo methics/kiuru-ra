@@ -34,7 +34,7 @@ on and it will manage (install/update) them for you.
     
 More about dotenv: https://github.com/motdotla/dotenv
     
-Add variable values in .env file
+Add needed values in .env, like API settings and default admin:pass
 
 ##Database settings
 The database configuration for your application is located at config/database.php

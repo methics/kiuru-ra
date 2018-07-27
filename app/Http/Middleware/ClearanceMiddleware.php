@@ -35,10 +35,6 @@ class ClearanceMiddleware {
             }
         }
 
-
-
-
-
         return $next($request);
     }
 }

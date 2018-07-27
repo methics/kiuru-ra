@@ -37,7 +37,6 @@ class MRegModel
         $res = $client->request("POST",$this->url,$options);
         $body = $res->getBody(); //gets json string
         return $body;
-
     }
 
     public function GetMobileUserData($msisdn){

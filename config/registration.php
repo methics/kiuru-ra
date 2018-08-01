@@ -1,4 +1,4 @@
-<?php//rename to MRegthingy? It's now also used for signature requests
+<?php
 
 return [
     "RequiredFields" => [
@@ -87,3 +87,4 @@ return [
 
 
 ];
+?>

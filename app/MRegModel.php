@@ -192,4 +192,5 @@ class MRegModel
         $body = $this->SendPost($string_json);
         return $body;
     }
+
 }

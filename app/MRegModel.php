@@ -2,8 +2,6 @@
 
 namespace App;
 
-//we dont probably need this
-//use Illuminate\Database\Eloquent\Model;
 
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
@@ -61,51 +59,46 @@ class MRegModel
 
     public function CreateMobileUser($info){
         $data = (object)$info;
-        $string_json = "{
+        $cfg = config("registration.RequiredFields");
+        $count = count($cfg);
+
+        $string_start = "{
             \"MSS_RegistrationReq\": {
                 \"User\": {
                     \"Role\": \"enduser\"
                 },
                 \"UseCase\": {
                     \"Name\": \"mids:CreateMobileUser\",
-                    \"Inputs\": [{
-                        \"Name\": \"msisdn\",
-                        \"Value\": \"$data->msisdn\"
-                    }, {
-                        \"Name\": \"givenName\",
-                        \"Value\": \"$data->fname\"
-                    }, {
-                        \"Name\": \"surName\",
-                        \"Value\": \"$data->lname\"
-                    }, {
-                        \"Name\": \"Language\",
-                        \"Value\": \"$data->ssn\"
-                    }, {
-                        \"Name\": \"hetu\",
-                        \"Value\": \"$data->ssn\"
-                    }, {
-                        \"Name\": \"AddressLine1\",
-                        \"Value\": \"$data->address\"
-                    }, {
-                        \"Name\": \"AddressLine2\",
-                        \"Value\": \"$data->address2\"
-                    }, {
-                        \"Name\": \"City\",
-                        \"Value\": \"$data->city\"
-                    }, {
-                        \"Name\": \"StateOrProvince\",
-                        \"Value\": \"$data->stateorprovince\"
-                    }, {
-                        \"Name\": \"ZipCode\",
-                        \"Value\": \"$data->postalcode\"
-                    }, {
-                        \"Name\": \"Country\",
-                        \"Value\": \"$data->country\"
-                    }
-                    ]
+                    \"Inputs\": [
+                 ";
+
+        $string_end = "]
                 }
             }
         }";
+
+        $string_mid = "";
+
+        for($i = 0; $i < $count; $i++){
+            $val = $data->$i;
+            $name = $cfg[$i]["mregname"];
+
+            $loopstring = "
+                {
+                \"Name\": \"$name\",
+                \"Value\": \"$val\"
+                }
+                ";
+
+            if($i == $count - 1){
+
+            }else{
+                $loopstring .= ",";
+            }
+            $string_mid .= $loopstring;
+        }
+
+        $string_json = $string_start . $string_mid . $string_end;
 
         $body = $this->SendPost($string_json);
         return $body;
@@ -173,6 +166,10 @@ class MRegModel
     }
 
     public function TestSignature($msisdn){
+
+        $cfg = config("registration.RequiredFields");
+        $count = count($cfg);
+
         $string_json = "{
             \"MSS_SignatureReq\": {
                 \"AP_Info\": {},

@@ -35,66 +35,6 @@ class MRegController extends Controller
     }
 
 
-    public function CreateMobileUser(Request $request){
-        $this->validate($request,[
-            "msisdn" => "required",
-            "fname" => "required",
-            "lname" => "required",
-            "language" =>  "required",
-            "ssn" => "required",
-            "address" => "required",
-            "address2" => "",
-            "city" => "required",
-            "stateorprovince" => "required",
-            "postalcode" => "required",
-            "country" => "required"
-        ]);
-
-        $msisdn = $request->input("msisdn");
-
-
-        $info = array(
-            "msisdn"            => $request->input("msisdn"),
-            "fname"             => $request->input("fname"),
-            "lname"             => $request->input("lname"),
-            "lang"              => $request->input("lang"),
-            "ssn"               => $request->input("ssn"),
-            "address"           => $request->input("address"),
-            "address2"          => $request->input("address2"),
-            "city"              => $request->input("city"),
-            "stateorprovince"   => $request->input("stateorprovince"),
-            "postalcode"        => $request->input("postalcode"),
-            "country"           => $request->input("country")
-        );
-
-
-        if($this->CheckIfSimExists($msisdn) !== true){
-            return view("pages.registration")->with("msg","ERROR: SIM card doesnt exist");
-        }
-
-        if($this->CheckIfUserExists($msisdn) !== true){
-            return view("pages.registration")->with("msg","ERROR: User already exists");
-        }else{
-
-            //create user
-            $model = new MRegModel();
-            $data = $model->CreateMobileUser($info);
-            $obj = json_decode($data);
-
-            if(isset($obj->Fault->Reason)){
-                return view("pages.registration")->with("msg","ERROR: $obj->Fault->Reason");
-            }else{
-                $obj = $this->ActivateMobileUser($msisdn);
-
-                if($this->ErrorOrNot($obj) !== false){
-                    return view("pages.index")->with("msg","ERROR: Activation failed");
-                }
-            }
-
-            return view("pages.index")->with("msg","Created user for MSISDN: {$msisdn} and started activation");
-        }
-    }
-
     public function LookupUser(Request $request){
         $this->validate($request,[
             "msisdn" => "required",
@@ -104,7 +44,7 @@ class MRegController extends Controller
         $data = $this->GetUserDataByMsisdn($msisdn);
 
         if($this->ErrorOrNot($data) == true){
-            return Redirect::back()->withErrors(["this MSISDN doesnt exist", "MSISDN doesnt exist"]);
+            return Redirect::back()->withErrors(["this MSISDN doesnt exist", "MSISDN doesnt exist"])->withInput();
         }
 
         $array = json_decode($data,true);
@@ -186,8 +126,67 @@ class MRegController extends Controller
             return Redirect::back()->withErrors(["Error sending test signature", "Error sending test signature"]);
         }
 
-
         //TODO: Finish this
+    }
+
+    public function CreateMobileUser(Request $request){
+
+        $cfg = config("registration.RequiredFields");
+        $count = count($cfg);
+
+        $array = array();//for form input validation
+        $info = array();//passing input to view
+
+        //looping config for validation info & inserting values to array for view
+        for($i = 0; $i < $count; $i++){
+
+           $first = $cfg[$i]["formID"];
+           $second = $cfg[$i]["options"];
+
+           $array +=[$first => $second];//for validation
+          // $info +=[$first => $request->input($first)];//passing input to CreateMobileUser model
+           $info +=[$i => $request->input($first)];
+
+        }
+
+
+
+
+        $this->validate($request,$array);
+
+        $msisdn = $request->input("msisdn");
+
+
+
+        if($this->CheckIfSimExists($msisdn) !== true){
+
+            return Redirect::back()->withErrors(["SIM card doesnt exists", "SIM card doesnt exists"])->withInput();
+        }
+
+        if($this->CheckIfUserExists($msisdn) !== true){
+            return Redirect::back()->withErrors(["ERROR: User already exists", "Error: User already exists"])->withInput();
+        }else{
+
+            //create user
+            $model = new MRegModel();
+            $data = $model->CreateMobileUser($info);
+            $obj = json_decode($data);
+
+            if(isset($obj->Fault->Reason)){
+                return view("pages.registration")->with("msg","ERROR: $obj->Fault->Reason");
+            }else{
+
+                $obj = $this->ActivateMobileUser($msisdn);
+
+                if($this->ErrorOrNot($obj) !== false){
+                    return view("pages.index")->with("msg","ERROR: Activation failed");
+                }
+            }
+
+            return view("pages.index")->with("msg","Created user for MSISDN: {$msisdn} and started activation");
+        }
+
+
     }
 
 

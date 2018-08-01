@@ -13,18 +13,20 @@
 
             {!! Form::open(["action" => "MRegController@CreateMobileUser", "method"=> "POST"]) !!}
 
-            @php ($count = count($cfg))
+                @php ($count = count($cfg))
 
-            @for($i=0;$i<$count;$i++)
-                @if($cfg[$i]["label"] == "address")
-                    <br><h4>Address</h4>
-                @endif
+                @for($i=0;$i<$count;$i++)
+                    @if($cfg[$i]["label"] == "address")
+                        <br><h4>Address</h4>
+                    @endif
 
-                <div class="form-group form-control-sm">
+                    <div class="form-group form-control-sm">
                     {{Form::label($cfg[$i]["label"],"")}}
                     {{Form::text($cfg[$i]["formID"],"",["class" => "form-control", "placeholder" => ""])}}
-                </div>
-            @endfor
+                    </div>
+                @endfor
+
+
 
             <br>
             {{Form::submit("Submit",["class" => "btn btn-primary"])}}

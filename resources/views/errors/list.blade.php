@@ -7,10 +7,6 @@
             @endforeach
         </ul>
     </div>
-@endif<?php
-/**
- * Created by PhpStorm.
- * User: teemu
- * Date: 26/07/2018
- * Time: 11.19
- */
+@endif
+
+

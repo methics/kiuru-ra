@@ -15,7 +15,6 @@
 Route::get("/","PagesController@index")->middleware("auth");
 Route::get("/registration","PagesController@registration")->middleware("auth","clearance");
 Route::get("/lookup","PagesController@lookup")->name("lookup")->middleware("auth","clearance");
-//Route::get("test","PagesController@configTest");
 
 //MReg routes
 Route::post("/","MRegController@CreateMobileUser")->middleware("auth");
@@ -28,12 +27,10 @@ Route::get("user/{msisdn}","MRegController@GetUserDataByMsisdn")->middleware("au
 Route::get("usercheck/{msisdn}", "MRegController@CheckIfUserExists")->middleware("auth");
 Route::get("activate/{msisdn}","MRegController@ActivateMobileUser")->middleware("auth");
 
-
 //auth
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
 Route::get('logout', ['as' => 'logout', 'uses' => 'Auth\LoginController@logout']);
-
 
 Route::resource("users","UserController")->middleware("auth");
 Route::resource("roles","RoleController")->middleware("auth");

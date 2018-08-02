@@ -11,9 +11,8 @@ Laravel requirements
     Ctype PHP Extension
     JSON PHP Extension
     
-https://laravel.com/docs/5.6/installation
-
-Note: After installing Laravel, you should configure your web server's document 
+Laravel installation happens through cloning & composer install.    
+Note: you should configure your web server's document 
 / web root to be the public directory: kiuru-ra/public
     
         

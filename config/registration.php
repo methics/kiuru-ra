@@ -79,11 +79,16 @@ return [
         "0" => [
             "Data" => "Mobile ID test",
             "SignatureProfile" => "http://alauda.mobi/digitalSignature",
-        ],
-        "1" => [
-            "Description" => "http://uri.etsi.org/TS102204/v1.1.2#validate",
         ]
-    ]
+    ],
+
+    "AdditionalServices" => [
+        "0" => [
+            "Description" => "http://uri.etsi.org/TS102204/v1.1.2#validate"
+        ],
+
+        
+    ],
 
 
 ];

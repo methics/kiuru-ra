@@ -167,28 +167,43 @@ class MRegModel
 
     public function TestSignature($msisdn){
 
-        $cfg = config("registration.RequiredFields");
+        $cfg = config("registration.AdditionalServices");
         $count = count($cfg);
 
-        $string_json = "{
+        $data = config("registration.SignatureReq.0.Data");
+        $signatureProfile = config("registration.SignatureReq.0.SignatureProfile");
+
+        $string_start = "{
             \"MSS_SignatureReq\": {
                 \"AP_Info\": {},
                 \"MobileUser\": {
-                    \"MSISDN\": \"$msisdn\"
+                    \"MSISDN\": \"+$msisdn\"
                 },
                 \"MessagingMode\": \"synch\",
                 \"DataToBeSigned\": {
                     \"MimeType\": \"text/plain\",
                     \"Encoding\": \"UTF-8\",
-                    \"Data\": \"Mobile ID test\"
-                },
-                \"SignatureProfile\": \"http://alauda.mobi/digitalSignature\",
-                \"AdditionalServices\": [{
-                    \"Description\": \"http://uri.etsi.org/TS102204/v1.1.2#validate\"
-                }]
-            }
-        }";
+                    \"Data\": \"$data\"
+                }, \"SignatureProfile\": \"$signatureProfile\",
+                \"AdditionalServices\": [";
 
+        $string_mid = "";
+        $string_end = " ]}
+            }
+            ";
+
+        for($i = 0; $i < $count; $i++){
+            $description = $cfg[$i]["Description"];
+            $loopstring = "{\"Description\": \"$description\"}";
+
+            if(!$i == $count - 1){
+                $loopstring .= ",";
+            }
+
+            $string_mid = $string_mid . $loopstring;
+        }
+
+        $string_json = $string_start . $string_mid  . $string_end;
         $body = $this->SendPost($string_json);
         return $body;
     }

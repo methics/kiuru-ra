@@ -14,12 +14,10 @@ Laravel requirements
 https://laravel.com/docs/5.6/installation
 
 Note: After installing Laravel, you should configure your web server's document 
-/ web root to be the  public directory
+/ web root to be the public directory: kiuru-ra/public
     
         
-##node & npm
-https://nodejs.org/en/download/package-manager/
-    
+
 ##Composer
 
 https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx
@@ -27,29 +25,56 @@ https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx
 Composer is a tool for dependency management in PHP. 
 It allows you to declare the libraries your project depends 
 on and it will manage (install/update) them for you.
-    
-    composer global require "laravel/installer"
-    
-    laravel new kiuru-ra
 
+After cloning kiuru-ra do:
+    
+    composer install
+    
+
+##Node & npm
+https://nodejs.org/en/download/package-manager/
+
+    npm install
+    
 
 ##Environment files
 
     cp env.example .env
     
-More about dotenv: https://github.com/motdotla/dotenv
+
+Add needed values in .env:
+
+    DB_HOST
+    DB_PORT
+    DB_USERNAME
+    DB_PASSWORD
     
-Add needed values in .env, like API settings and default admin:pass
+    API_URL
+    API_USER
+    API_PASS     
+    
+    ADMIN_USER
+    ADMIN_PASS
+    
+ADMIN_USER and ADMIN_PASS are used to create the first authenticated user, which you need
+in order to control kiuru-ra
+    
+More about dotenv: https://github.com/motdotla/dotenv
 
-##Database settings
-The database configuration for your application is located at config/database.php
+##Generate app encryption key:
+  
+      php artisan key:generate    
 
-Most likely not needed since retrieving database settings from .env
+##Database
+You need to create a new database for kiuru-ra
 
-##Build database tables
+    create database kiuru_ra;
+
+##Build database tables & seed tables
 go to project folder and:
 
     php artisan migrate
+    php artisan db:seed
     
-##Laravel-permissions library
-https://github.com/spatie/laravel-permission
+    
+    

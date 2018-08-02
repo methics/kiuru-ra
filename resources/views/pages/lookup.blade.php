@@ -8,6 +8,10 @@
             <h4>{{$errors->first()}}</h4>
         @endif
 
+            @if(isset($msg))
+                <h4>{{$msg}}</h4>
+            @endif
+
         <h2>Lookup user</h2>
 
 

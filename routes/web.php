@@ -28,14 +28,12 @@ Route::get("user/{msisdn}","MRegController@GetUserDataByMsisdn")->middleware("au
 Route::get("usercheck/{msisdn}", "MRegController@CheckIfUserExists")->middleware("auth");
 Route::get("activate/{msisdn}","MRegController@ActivateMobileUser")->middleware("auth");
 
-//Route::post("/testreg","MRegController@TestCreate");
 
-
-//Auth::routes();
+//auth
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');//fix
-//Route::get("auth/logout","Auth\AuthController@logout");
+Route::get('logout', ['as' => 'logout', 'uses' => 'Auth\LoginController@logout']);
+
 
 Route::resource("users","UserController")->middleware("auth");
 Route::resource("roles","RoleController")->middleware("auth");

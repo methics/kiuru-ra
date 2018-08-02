@@ -64,9 +64,7 @@ class MRegController extends Controller
 
         $data = array("fname"=>"$givenName","surname"=>"$surName","msisdn"=>"$msisdn","state"=>"$state");
         return view("pages.userinfo",["data" => $data]);
-
     }
-
 
     /*TODO: If error exists put in a variable and echo message instead of prewritten errormsg in the code
      * feed this an JSON array

@@ -1,4 +1,4 @@
-#Installing
+# Installing
 
 Laravel requirements
 
@@ -17,7 +17,7 @@ Note: you should configure your web server's document
     
         
 
-##Composer
+## Composer
 
 https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx
 
@@ -30,13 +30,13 @@ After cloning kiuru-ra do:
     composer install
     
 
-##Node & npm
+## Node & npm
 https://nodejs.org/en/download/package-manager/
 
     npm install
     
 
-##Environment files
+## Environment files
 
     cp env.example .env
     
@@ -60,16 +60,16 @@ in order to control kiuru-ra
     
 More about dotenv: https://github.com/motdotla/dotenv
 
-##Generate app encryption key:
+## Generate app encryption key:
   
       php artisan key:generate    
 
-##Database
+## Database
 You need to create a new database for kiuru-ra
 
     create database kiuru_ra;
 
-##Build database tables & seed tables
+## Build database tables & seed tables
 go to project folder and:
 
     php artisan migrate

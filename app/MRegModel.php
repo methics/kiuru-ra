@@ -13,7 +13,6 @@ class MRegModel
     private $username;
     private $password;
 
-
     public function __construct(){
         $this->url      = env("API_URL");
         $this->username = env("API_USER");

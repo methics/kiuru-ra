@@ -16,13 +16,14 @@ class UsersTableSeeder extends Seeder
     {
         DB::table("users")->truncate();
         $admin_user = env("ADMIN_USER");
+        $admin_email = env("ADMIN_EMAIL");
         $admin_pass = env("ADMIN_PASS");
 
 
         DB::table("users")->insert([
             "id"             => 1,
             "name"           => $admin_user,
-            "email"          => "admin@admin.com",
+            "email"          => $admin_email,
             "password"       => bcrypt($admin_pass),
             "created_at"     => \Carbon\Carbon::now()->format("Y-m-d H:i:s"),
         ]);

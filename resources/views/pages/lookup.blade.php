@@ -5,11 +5,11 @@
         <div class="col col-lg-4">
 
         @if($errors->any())
-            <h4>{{$errors->first()}}</h4>
+                <p class="alert alert-danger">{{$errors->first()}}</p>
         @endif
 
             @if(isset($msg))
-                <h4>{{$msg}}</h4>
+                <p class="alert alert-info">{{$msg}}</p>
             @endif
 
         <h2>Lookup user</h2>
@@ -23,6 +23,7 @@
             </div>
         {{Form::submit("Submit",["class" => "btn btn-primary"])}}
         {!! Form::close() !!}
+
         </div>
     </div>
 @endsection

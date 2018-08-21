@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Session;
 use Illuminate\Http\Request;
 
 use App\MRegModel;
@@ -34,20 +34,23 @@ class MRegController extends Controller
     }
 
     public function LookupUser(Request $request){
+
         $this->validate($request,[
             "msisdn" => "required",
         ]);
 
         $msisdn = $request->input("msisdn");
+
         $data = $this->GetUserDataByMsisdn($msisdn);
+
 
         if($this->ErrorOrNot($data) == true){
             return Redirect::back()->withErrors(["this MSISDN doesnt exist", "MSISDN doesnt exist"])->withInput();
         }
 
         $array = json_decode($data,true);
-
         //TODO: config for this ????
+
         foreach($array["MSS_RegistrationResp"]["UseCase"]["Outputs"] as $key=>$val){
             foreach($val as $k=>$v){
                 if($v == "http://mss.ficom.fi/TS102204/v1.0.0/PersonID#givenName" || $v == "GivenName"){
@@ -66,9 +69,10 @@ class MRegController extends Controller
         return view("pages.userinfo",["data" => $data]);
     }
 
-    /*TODO: If error exists put in a variable and echo message instead of prewritten errormsg in the code
+    /*TODO: If error exists put it in a variable and echo message instead of prewritten errormsg in the code
      * feed this an JSON array
      */
+
     public function ErrorOrNot($body){
         $obj = json_decode($body);
 
@@ -114,7 +118,6 @@ class MRegController extends Controller
     public function TestSignature(Request $request){
         $msisdn = $request->route("msisdn");
         $model = new MRegModel();
-
         $data = $model->TestSignature($msisdn);
         $obj = json_decode($data);
 
@@ -125,12 +128,11 @@ class MRegController extends Controller
         }
 
         if($this->ErrorOrNot($data) == false){
-            return view("pages.lookup")->with("msg","$msg");
-
+            return response()->json(array("msg" => $msg), 200);
         }else{
-            //return Redirect::back()->withErrors(["Error sending test signature", "Error sending test signature"]);
-            return view("pages.lookup")->with("msg",$msg);
+            return response()->json(array("msg" => $msg), 200);
         }
+
     }
 
     public function CreateMobileUser(Request $request){
@@ -140,6 +142,7 @@ class MRegController extends Controller
 
         $array = array();//for form input validation
         $info = array();//passing input to view
+
 
         for($i = 0; $i < $count; $i++){
 
@@ -170,21 +173,89 @@ class MRegController extends Controller
             $obj = json_decode($data);
 
             if(isset($obj->Fault->Reason)){
-                return view("pages.registration")->with("msg","ERROR: $obj->Fault->Reason");
+                $error = $obj->Fault->Reason;
+                return Redirect::back()->withErrors(["ERROR : $error", "ERROR: Couldnt create mobile user"])->withInput();
             }else{
-
                 $obj = $this->ActivateMobileUser($msisdn);
 
                 if($this->ErrorOrNot($obj) !== false){
                     return view("pages.index")->with("msg","ERROR: Activation failed");
                 }
             }
-
             return view("pages.index")->with("msg","Created user for MSISDN: {$msisdn} and started activation");
         }
+    }
 
+    public function EditMobileUserView($msisdn){
+        $model = new MRegModel();
+        $data = $model->GetMobileUserData($msisdn);
+        $array = json_decode($data,true);
+
+        //get required fields data
+        $cfg = config("registration.RequiredFields");
+        $count = count($cfg);
+
+        $requiredFields = array();
+        $data = array();
+
+        //get required fields loop
+        for($i = 0; $i < $count; $i++){
+            $first = $cfg[$i]["mregname"];
+            array_push($requiredFields,$first);
+        }
+
+        foreach($array["MSS_RegistrationResp"]["UseCase"]["Outputs"] as $key=>$val){
+            foreach($val as $k=>$v){
+
+                if($this->in_arrayi($v,$requiredFields)){
+                    $value = last($val);
+                    $v = strtolower($v);
+                    $data[$v] = $value;
+                }
+            }
+        }
+
+        return view("pages.updateuser",["data" => $data])->with("cfg",$cfg);
 
     }
 
+    //for case insensitive array lookup
+    public function in_arrayi($needle,$haystack){
+        return in_array(strtolower($needle), array_map("strtolower",$haystack));
+    }
+
+    public function UpdateUser(Request $request){
+        //get required fields data
+        $cfg = config("registration.RequiredFields");
+        $count = count($cfg);
+
+        $array = array();//for form input validation
+        $info = array();//passing input to view
+
+
+        for($i = 0; $i < $count; $i++){
+            $first = $cfg[$i]["formID"];
+            $second = $cfg[$i]["options"];
+
+            $array +=[$first => $second];//for validation
+
+            $info +=[$i => $request->input($first)];
+        }
+
+        $this->validate($request,$array);
+        $msisdn = $request->input("msisdn");
+
+
+        $model = new MRegModel();
+        $data = $model->UpdateUser($info);
+        $obj = json_decode($data);
+
+        if(isset($obj->Fault->Reason)){
+            $error = $obj->Fault->reason;
+            return Redirect::back()->withErrors(["ERROR : $error", "ERROR: $error"])->withInput();
+        }else{
+            return Redirect::back()->with("msg","User edit success!");
+        }
+    }
 
 }

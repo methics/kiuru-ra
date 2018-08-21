@@ -207,4 +207,63 @@ class MRegModel
         return $body;
     }
 
+    public function UpdateUser($info){
+        $data = (object)$info;
+        $cfg = config("registration.RequiredFields");
+        $count = count($cfg);
+
+
+
+        $string_start  = "{
+          \"MSS_RegistrationReq\": {
+            \"User\": {
+              \"Role\": \"enduser\"
+            },
+            \"UseCase\": {
+              \"Name\": \"mids:UpdateMobileUser\",
+              \"Inputs\": [{
+                \"Name\": \"targetmsisdn\",
+                \"Value\": \"$info[0]\"
+              },
+        ";
+
+        $string_mid = "";
+
+        $string_end = "]
+                }
+              }
+            }
+        ";
+
+
+        for($i = 0; $i < $count; $i++){
+            $val = $data->$i;
+            $name = $cfg[$i]["mregname"];
+
+            $loopstring = "
+                {
+                \"Name\": \"$name\",
+                \"Value\": \"$val\"
+                }
+                ";
+
+            if($i == $count - 1){
+
+            }else{
+                $loopstring .= ",";
+            }
+
+            $string_mid .= $loopstring;
+        }
+
+        $string_json = $string_start . $string_mid . $string_end;
+
+        $body = $this->SendPost($string_json);
+        return $body;
+
+
+
+
+    }
+
 }

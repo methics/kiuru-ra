@@ -1,76 +1,90 @@
 <?php
-
-//todo: put "required" into "options", we might want to check for more options than required
+//todo: rename to mregSOMETHING since it also handles signature requests
+//options is for form validation: https://laravel.com/docs/5.6/validation#available-validation-rules
 return [
     "RequiredFields" => [
         "0" => [
             "label" => "MSISDN",
-            "type"  => "text",
             "formID" => "msisdn",
-            "required" => "true",
+            "options" => "required", //for form validator
+            "mregname" => "MSISDN"
         ],
         "1" => [
             "label" => "First name",
-            "type"  => "text",
             "formID" => "fname",
-            "required" => "true",
+            "options" => "required",
+            "mregname" => "GivenName",
         ],
         "2" => [
             "label" => "Last name",
-            "type"  => "text",
             "formID" => "lname",
-            "required" => "true",
+            "options" => "required",
+            "mregname" => "Surname",
         ],
         "3" => [
             "label" => "Language",
-            "type" => "text",
             "formID" => "language",
-            "required" => "true",
+            "options" => "required",
+            "mregname" => "Language",
         ],
         "4" => [
             "label" => "SSN",
-            "type"  => "text",
             "formID" => "ssn",
-            "required" => "true",
+            "options" => "required",
+            "mregname" => "Hetu",
         ],
         "5" => [
             "label" => "address",
-            "type"  => "text",
             "formID" => "address",
-            "required" => "true",
+            "options" => "required",
+            "mregname" => "AddressLine1",
         ],
         "6" => [
             "label" => "address line 2",
-            "type" => "text",
             "formID" => "address2",
-            "required" => "false",
+            "options" => "",
+            "mregname" => "AddressLine2",
         ],
         "7" => [
             "label" => "city",
-            "type" => "text",
             "formID" => "city",
-            "required" => "true",
-         ],
-
+            "options" => "required",
+            "mregname" => "City",
+        ],
         "8" => [
             "label" => "state/province",
-            "type" => "text",
             "formID" => "stateorprovince",
-            "required" => "true",
+            "options" => "required",
+            "mregname" => "StateOrProvince",
         ],
         "9" => [
             "label" => "postalcode",
-            "type" => "text",
             "formID" => "postalcode",
-            "required" => "true",
+            "options" => "required",
+            "mregname" => "ZipCode",
         ],
         "10" => [
             "label" => "country",
-            "type" => "text",
             "formID" => "country",
-            "required" => "true",
+            "options" => "required",
+            "mregname" => "Country",
+        ]
+    ],
+    "SignatureReq" => [
+        "0" => [
+            "Data" => "Mobile ID test",
+            "SignatureProfile" => "http://alauda.mobi/digitalSignature",
+        ]
+    ],
+
+    "AdditionalServices" => [
+        "0" => [
+            "Description" => "http://uri.etsi.org/TS102204/v1.1.2#validate"
         ],
+
+
     ],
 
 
 ];
+?>

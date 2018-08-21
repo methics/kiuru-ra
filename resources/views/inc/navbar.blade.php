@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-md navbar-methics fixed-top">
-    <a class="navbar-brand" href="#"><img src="https://www.methics.fi/wp-content/uploads/2013/06/cropped-l_methics_shadow2.png"></a>
+    <a class="navbar-brand" href="/"><img src="https://www.methics.fi/wp-content/uploads/2013/06/cropped-l_methics_shadow2.png"></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -25,21 +25,35 @@
 
 
         </ul>
-        <!-- Right Side Of Navbar -->
-        <ul class="navbar-nav ml-auto">
-            <!-- Authentication Links -->
-            @guest
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+        @auth
+            <!-- Right Side Of Navbar -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Authentication Links -->
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @guest
+                            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+
+                        @endguest
+
+                        @auth
+                            {{Auth::user()->name}}
+                        @endauth
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="profile">Profile</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{{ route("logout") }}">Logout</a>
+                    </div>
                 </li>
 
-            @else
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route("logout") }}">Logout</a>
-                </li>
+            </ul>
+        @endauth
 
-            @endguest
-        </ul>
+        @guest
+            <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
+        @endguest
 
     </div>
 </nav>

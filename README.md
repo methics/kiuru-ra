@@ -38,7 +38,7 @@ https://nodejs.org/en/download/package-manager/
 
 ## Environment files
 
-    cp env.example .env
+    cp .env.example .env
     
 
 Add needed values in .env:

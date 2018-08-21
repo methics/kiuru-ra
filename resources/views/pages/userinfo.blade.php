@@ -12,6 +12,10 @@
                 ?>
             @endif
 
+                @if(isset($msg))
+                    <p class="alert alert-info">{{$msg}}</p>
+                @endif
+
             <h2>User info</h2>
 
             <table class="table">
@@ -44,14 +48,39 @@
 
             <?php
             if($state == "ACTIVE"){
-                echo "<a href='/deactivate/{$msisdn}' class='btn btn-primary btn-lg' role='button'>Deactivate</a>";
-            }else{
-                echo "<a href='/activate/{$msisdn}' class='btn btn-primary btn-lg' role='button'>Activate</a>";
+                echo "<a href='/deactivate/{$msisdn}' class='btn btn-primary btn-lg short-button' role='button'>Deactivate</a>";
             }
             ?>
-            <a href="/testsignature/{{$msisdn}}" class="btn btn-primary btn-lg" role="button">Test</a>
-            <a href="/lookup" class="btn btn-primary btn-lg" role="button">Back</a>
+            <a href="edituser/{{$msisdn}}" class="btn btn-primary btn-lg">Edit</a>
+                <br><br>
 
+            <a href="/lookup" class="btn btn-primary btn-lg" role="button">Back</a>
+            <br><br>
+
+            <button type="button" id="test" class="btn btn-primary btn-lg short-button" role="button">Test</button>
+
+                <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+                <script>
+                    (function ($) {
+                        $(document).ready(function() {
+                            var url = "<?php echo "/testsignature/" . $msisdn; ?>"
+
+                            $('#test').on('click', function() {
+
+                                $.ajax({
+                                    url,
+                                    type: 'GET',
+                                    data: { _token: '{{ csrf_token() }}' },
+                                    success:function(data){
+                                        alert(data.msg);
+                                    }
+                                });
+
+                            });
+
+                        });
+                    }(jQuery));
+                </script>
         </div>
     </div>
 @endsection

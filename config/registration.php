@@ -1,12 +1,11 @@
 <?php
-
 return [
     "RequiredFields" => [
         "0" => [
             "label" => "MSISDN",
             "formID" => "msisdn",
             "options" => "required", //for form validator
-            "mregname" => "msisdn"
+            "mregname" => "msisdn",
         ],
         "1" => [
             "label" => "First name",
@@ -68,12 +67,7 @@ return [
             "options" => "required",
             "mregname" => "Country",
         ],
-        "11" => [
-            "label" => "email",
-            "formID" => "email",
-            "options" => "",
-            "mregname" =>  "email",
-        ]
+
     ],
     "SignatureReq" => [
         "0" => [
@@ -81,15 +75,11 @@ return [
             "SignatureProfile" => "http://alauda.mobi/digitalSignature",
         ]
     ],
-
     "AdditionalServices" => [
         "0" => [
             "Description" => "http://uri.etsi.org/TS102204/v1.1.2#validate"
         ],
 
-        
     ],
-
-
 ];
 ?>

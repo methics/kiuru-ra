@@ -35,6 +35,22 @@ class ClearanceMiddleware {
             }
         }
 
+        if($request->is("edituser")){
+            if(!Auth::user()->hasPermissionTo("edituser")){
+                abort("401");
+            }else{
+                return $next($request);
+            }
+        }
+
+
         return $next($request);
+
+
+
+
     }
+
+
+
 }

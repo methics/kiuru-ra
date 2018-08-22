@@ -28,7 +28,7 @@
             @for($i=0;$i<$count;$i++)
 
                 @if($cfg[$i]["label"] == "address")
-                    <h4>Address</h4>
+                    <br><h4>Address</h4>
                 @endif
 
                 <?php

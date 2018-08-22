@@ -9,6 +9,7 @@
                 $lname = $data["surname"];
                 $msisdn = $data["msisdn"];
                 $state = $data["state"];
+                $lang = $data["lang"];
                 ?>
             @endif
 
@@ -42,22 +43,25 @@
                         <th scope="row">State</th>
                         <td>{{$state}}</td>
                     </tr>
+                    <tr>
+                        <th scrope="row">Language</th>
+                        <td>{{$lang}}</td>
+                    </tr>
 
                 </tbody>
             </table>
 
             <?php
             if($state == "ACTIVE"){
-                echo "<a href='/deactivate/{$msisdn}' class='btn btn-primary btn-lg short-button' role='button'>Deactivate</a>";
+                echo "<a href='/deactivate/{$msisdn}' class='btn btn-primary btn-lg' role='button'>Deactivate</a>";
             }
             ?>
+
+            <button type="button" id="test" class="btn btn-primary btn-lg" role="button">Test</button>
             <a href="edituser/{{$msisdn}}" class="btn btn-primary btn-lg">Edit</a>
-                <br><br>
-
             <a href="/lookup" class="btn btn-primary btn-lg" role="button">Back</a>
-            <br><br>
+            <a href="deleteuser/{{$msisdn}}" class="btn btn-danger btn-lg confirm" onclick="areYouSure()" id="delete">Delete</a>
 
-            <button type="button" id="test" class="btn btn-primary btn-lg short-button" role="button">Test</button>
 
                 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
                 <script>
@@ -81,6 +85,11 @@
                         });
                     }(jQuery));
                 </script>
+                <script>$(function() {
+                        $('.confirm').click(function() {
+                            return window.confirm("Are you sure?");
+                        });
+                    });</script>
         </div>
     </div>
 @endsection

@@ -260,9 +260,27 @@ class MRegModel
 
         $body = $this->SendPost($string_json);
         return $body;
+    }
 
+    public function DeleteMobileUser($msisdn){
+        $string_json = "
+        {
+            \"MSS_RegistrationReq\": {
+                \"User\": {
+                    \"Role\": \"enduser\"
+                },
+                \"UseCase\": {
+                    \"Name\": \"mids:DeleteMobileUser\",
+                    \"Inputs\": [{
+                        \"Name\": \"targetmsisdn\",
+                        \"Value\": \"$msisdn\"
+                    }]
+                }
+            }
+        }";
 
-
+        $body = $this->SendPost($string_json);
+        return $body;
 
     }
 

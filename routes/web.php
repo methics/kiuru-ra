@@ -27,13 +27,13 @@ Route::get("/testsignature/{msisdn}","MRegController@TestSignature")->middleware
 //Route::post("/edit","MRegController@EditMobileUser");
 Route::get("/edituser/{msisdn}","MRegController@EditMobileUserView")->middleware("auth","clearance");
 Route::post("/submitedits","MRegController@UpdateUser")->middleware("auth","clearance");
+Route::get("/deleteuser/{msisdn}","MRegController@DeleteUser")->middleware("auth");
 
 
 
 //for testing
 Route::get("user/{msisdn}","MRegController@GetUserDataByMsisdn")->middleware("auth");
 Route::get("usercheck/{msisdn}", "MRegController@CheckIfUserExists")->middleware("auth");
-Route::get("activate/{msisdn}","MRegController@ActivateMobileUser")->middleware("auth");
 
 //auth
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');

@@ -4,28 +4,14 @@
     <div class="row justify-content-md-center">
         <div class="col col-lg-3">
 
-            @if($errors->any())
-                <p class="alert alert-danger"><img src="{{URL::asset("images/alert.svg")}}" class="alert-icon">
-                    Fill all required fields!
-                </p>
-
-            @endif
-
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
 
             <h1>Register user</h1>
             <br>
 
                 {!! Form::open(["action" => "MRegController@CreateMobileUser", "method"=> "POST"]) !!}
-
+            @if ($errors->any())
+                {{ implode('', $errors->all(':message')) }}
+            @endif
 
                 @php ($count = count($cfg))
 
@@ -45,7 +31,7 @@
 
 
                         @if($errors->has($formID))
-                            {{Form::text($cfg[$i]["formID"],"",["class" => "form-control reg-input has-error form-input-error", "placeholder" => ""])}}
+                            {{Form::text($cfg[$i]["formID"],"",["class" => "form-control reg-input has-success form-input-error", "placeholder" => ""])}}
                         @else
                             {{Form::text($cfg[$i]["formID"],"",["class" => "form-control reg-input", "placeholder" => ""])}}
                         @endif

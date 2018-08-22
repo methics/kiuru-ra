@@ -10512,13 +10512,13 @@ input[type=password] {
 }
 
 .reg-input {
-  width: 350px;
   height: 30px;
-  margin: 0px;
 }
 
 .form-input-error {
-  background: url(/images/icon.jpg?2a101caed8c83c252d9dafb505282122) no-repeat right 4px;
+  border-radius: 20px;
+  border: 3px solid;
+  background: url(/images/icon.jpg?2a101caed8c83c252d9dafb505282122) no-repeat right 2px;
   background-color: transparent;
 }
 
@@ -10528,8 +10528,16 @@ label {
 
 .btn-primary {
   background-color: #41367A;
-  border: 0px;
   border-radius: 20px;
-  width: 100%;
+  width: 20%;
+  border: 0;
+}
+
+.btn-danger {
+  border-radius: 20px;
+}
+
+.btn-info {
+  border-radius: 20px;
 }
 

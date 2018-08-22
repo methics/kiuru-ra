@@ -57,15 +57,18 @@ class MRegController extends Controller
                     $givenName = next($val);
                 }
                 if($v == "http://mss.ficom.fi/TS102204/v1.0.0/PersonID#surName" || $v == "Surname"){
-                    $surName = next($val);
+                    $surName = last($val);
                 }
                 if($v == "State"){
                     $state = last($val);
                 }
+                if($v == "Language"){
+                    $lang = last($val);
+                }
             }
         }
 
-        $data = array("fname"=>"$givenName","surname"=>"$surName","msisdn"=>"$msisdn","state"=>"$state");
+        $data = array("fname"=>"$givenName","surname"=>"$surName","msisdn"=>"$msisdn","state"=>"$state","lang"=>$lang);
         return view("pages.userinfo",["data" => $data]);
     }
 
@@ -80,10 +83,6 @@ class MRegController extends Controller
         if($this->ErrorOrNot($data) == true){
             return Redirect::back()->withErrors(["This MSISDN doesnt exists", "MSISDN doesnt exists"]);
         }
-
-
-
-
     }
 
     /*TODO: If error exists put it in a variable and echo message instead of prewritten errormsg in the code
@@ -177,11 +176,12 @@ class MRegController extends Controller
 
         if($this->CheckIfSimExists($msisdn) !== true){
 
-            return Redirect::back()->withErrors(["SIM card doesnt exists", "SIM card doesnt exists"])->withInput();
+            return Redirect::back()->withErrors(["SIM card doesnt exists", ""])->withInput();
         }
 
         if($this->CheckIfUserExists($msisdn) !== true){
-            return Redirect::back()->withErrors(["ERROR: User already exists", "Error: User already exists"])->withInput();
+            return redirect("edituser/$msisdn")->with("msg","User already exists!");
+            //return Redirect::back()->withErrors(["ERROR: User already exists", ""])->withInput();
         }else{
 
             //create user
@@ -273,6 +273,21 @@ class MRegController extends Controller
         }else{
             return Redirect::back()->with("msg","User edit success!");
         }
+    }
+
+    public function DeleteUser($msisdn){
+        $model = new MRegModel();
+        $data = $model->DeleteMobileUser($msisdn);
+
+        $obj = json_decode($data);
+
+        if(isset($obj->Fault->Reason)){
+            return view("pages.lookup")->with("msg","Could not delete user");
+        }else{
+            return view("pages.index")->with("msg"," {$msisdn} has been deleted");
+        }
+
+
     }
 
 }

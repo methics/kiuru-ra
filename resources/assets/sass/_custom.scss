@@ -30,9 +30,6 @@ input[type=text],input[type=email],input[type=password]{
 }
 
 
-.has-error{
-  border: 1px solid #e74c3c;
-}
 
 .required-mark{
   color: red;
@@ -49,6 +46,12 @@ input[type=text],input[type=email],input[type=password]{
 .reg-input{
   width: 350px;
   height: 30px;
+  margin: 0px;
+}
+
+.form-input-error{
+  background:url("../img/icon.jpg") no-repeat right 4px;
+  background-color: transparent;
 
 }
 
@@ -61,18 +64,4 @@ label{
   border: 0px;
   border-radius: 20px;
   width: 100%;
-}
-
-.loader {
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #3498db; /* Blue */
-  border-radius: 50%;
-  width: 120px;
-  height: 120px;
-  animation: spin 2s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }

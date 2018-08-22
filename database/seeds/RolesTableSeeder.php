@@ -16,7 +16,13 @@ class RolesTableSeeder extends Seeder
             "id"                => 1,
             "name"              => "kiuru-ra-admin",
             "guard_name"        => "web",
-            //"updated_at"        => \Carbon\Carbon::now()->format("Y-m-d H:i:s"),
+
+        ]);
+        DB::table("roles")->insert([
+            "id"                => 2,
+            "name"              => "kiuru-ra-user",
+            "guard_name"        => "web",
+
         ]);
 
         DB::table("model_has_roles")->insert([

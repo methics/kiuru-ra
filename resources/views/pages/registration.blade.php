@@ -43,13 +43,9 @@
                             echo "<span class='required-mark'>*</span>";
                         }?>
 
-                        @if($errors->has($formID))
-                            <img src="{{URL::asset("images/alert.svg")}}" class="alert-icon">
-                        @endif
-
 
                         @if($errors->has($formID))
-                            {{Form::text($cfg[$i]["formID"],"",["class" => "form-control has-error reg-input reg-input-error", "placeholder" => ""])}}
+                            {{Form::text($cfg[$i]["formID"],"",["class" => "form-control reg-input has-error form-input-error", "placeholder" => ""])}}
                         @else
                             {{Form::text($cfg[$i]["formID"],"",["class" => "form-control reg-input", "placeholder" => ""])}}
                         @endif

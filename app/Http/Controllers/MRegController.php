@@ -69,6 +69,23 @@ class MRegController extends Controller
         return view("pages.userinfo",["data" => $data]);
     }
 
+    public function LookUpUser2(Request $request){
+        $this->validate($request,[
+            "msisdn" => "required",
+        ]);
+
+        $msisdn = $request->input("msisdn");
+        $data = $this->getUserDataByMsisdn($msisdn);
+
+        if($this->ErrorOrNot($data) == true){
+            return Redirect::back()->withErrors(["This MSISDN doesnt exists", "MSISDN doesnt exists"]);
+        }
+
+
+
+
+    }
+
     /*TODO: If error exists put it in a variable and echo message instead of prewritten errormsg in the code
      * feed this an JSON array
      */
@@ -102,7 +119,7 @@ class MRegController extends Controller
     }
 
 
-    public function DeactivateMobileUser(Request $request, $msisdn){
+    public function DeactivateMobileUser(Request $request){
         $msisdn = $request->route("msisdn");
         $model = new MRegModel();
         $data = $model->DeactivateUser($msisdn);

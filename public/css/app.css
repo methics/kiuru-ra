@@ -10499,10 +10499,6 @@ input[type=password] {
   font-size: 18px;
 }
 
-.has-error {
-  border: 1px solid #e74c3c;
-}
-
 .required-mark {
   color: red;
   font-size: 20px;
@@ -10518,6 +10514,12 @@ input[type=password] {
 .reg-input {
   width: 350px;
   height: 30px;
+  margin: 0px;
+}
+
+.form-input-error {
+  background: url(/images/icon.jpg?2a101caed8c83c252d9dafb505282122) no-repeat right 4px;
+  background-color: transparent;
 }
 
 label {

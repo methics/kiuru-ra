@@ -22,7 +22,6 @@ class RolesTableSeeder extends Seeder
             "id"                => 2,
             "name"              => "kiuru-ra-user",
             "guard_name"        => "web",
-
         ]);
 
         DB::table("model_has_roles")->insert([

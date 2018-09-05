@@ -9,6 +9,7 @@
                 $lname = $data["surname"];
                 $msisdn = $data["msisdn"];
                 $state = $data["state"];
+                $country = $data["country"];
                 $lang = $data["lang"];
                 ?>
             @endif
@@ -44,7 +45,11 @@
                         <td>{{$state}}</td>
                     </tr>
                     <tr>
-                        <th scrope="row">Language</th>
+                        <th scope="row">Country</th>
+                        <td>{{$country}}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Language</th>
                         <td>{{$lang}}</td>
                     </tr>
 
@@ -60,7 +65,7 @@
             <button type="button" id="test" class="btn btn-primary btn-lg" role="button">Test</button>
             <a href="edituser/{{$msisdn}}" class="btn btn-primary btn-lg">Edit</a>
             <a href="/lookup" class="btn btn-primary btn-lg" role="button">Back</a>
-            <a href="deleteuser/{{$msisdn}}" class="btn btn-danger btn-lg confirm" onclick="areYouSure()" id="delete">Delete</a>
+            <a href="deleteuser/{{$msisdn}}" class="btn btn-danger btn-lg confirm" onclick="return confirm('Are you sure?')" id="delete">Delete</a>
 
 
                 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -85,11 +90,7 @@
                         });
                     }(jQuery));
                 </script>
-                <script>$(function() {
-                        $('.confirm').click(function() {
-                            return window.confirm("Are you sure?");
-                        });
-                    });</script>
+
         </div>
     </div>
 @endsection

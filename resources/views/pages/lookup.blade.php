@@ -8,9 +8,9 @@
                 <p class="alert alert-danger">{{$errors->first()}}</p>
         @endif
 
-            @if(isset($msg))
-                <p class="alert alert-info">{{$msg}}</p>
-            @endif
+        @if(isset($msg))
+            <p class="alert alert-info">{{$msg}}</p>
+        @endif
 
         <h2>Lookup user</h2>
 

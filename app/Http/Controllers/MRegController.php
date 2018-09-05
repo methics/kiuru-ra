@@ -1,5 +1,6 @@
 <?php
 
+
 namespace App\Http\Controllers;
 use Session;
 use Illuminate\Http\Request;
@@ -13,16 +14,34 @@ use Spatie\Permission\Models\Permission;
 class MRegController extends Controller
 {
 
+    /**
+     * Has middleware "auth" for requiring authentication
+     *
+     * MRegController constructor.
+     */
     public function __construct(){
-        $this->middleware("auth");
+        $this->middleware(["auth","clearance"]);
     }
 
+
+    /**
+     * Gets user data from the API with curl/Guzzle using MRegModel
+     *
+     * @param $msisdn
+     * @return \Psr\Http\Message\StreamInterface
+     */
     public function GetUserDataByMsisdn($msisdn){
         $model = new MRegModel();
         $body = $model->GetMobileUserData($msisdn);
         return $body;
     }
 
+    /**
+     * Checks if user exists
+     *
+     * @param $msisdn
+     * @return bool
+     */
     public function CheckIfUserExists($msisdn){
         $data = $this->GetUserDataByMsisdn($msisdn);
         $obj = json_decode($data);
@@ -33,6 +52,12 @@ class MRegController extends Controller
         }
     }
 
+    /**
+     * Looks up user information based on given MSISDN.
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function LookupUser(Request $request){
 
         $this->validate($request,[
@@ -42,7 +67,6 @@ class MRegController extends Controller
         $msisdn = $request->input("msisdn");
 
         $data = $this->GetUserDataByMsisdn($msisdn);
-
 
         if($this->ErrorOrNot($data) == true){
             return Redirect::back()->withErrors(["this MSISDN doesnt exist", "MSISDN doesnt exist"])->withInput();
@@ -62,33 +86,55 @@ class MRegController extends Controller
                 if($v == "State"){
                     $state = last($val);
                 }
+                if($v == "Country"){
+                    $country = last($val);
+                }
                 if($v == "Language"){
                     $lang = last($val);
                 }
             }
         }
 
-        $data = array("fname"=>"$givenName","surname"=>"$surName","msisdn"=>"$msisdn","state"=>"$state","lang"=>$lang);
+        $data = array("fname"=>"$givenName","surname"=>"$surName","msisdn"=>"$msisdn","state"=>"$state","country"=>$country,"lang"=>$lang);
         return view("pages.userinfo",["data" => $data]);
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
     public function LookUpUser2(Request $request){
         $this->validate($request,[
             "msisdn" => "required",
         ]);
 
         $msisdn = $request->input("msisdn");
-        $data = $this->getUserDataByMsisdn($msisdn);
+        $data = $this->GetUserDataByMsisdn($msisdn);
 
         if($this->ErrorOrNot($data) == true){
             return Redirect::back()->withErrors(["This MSISDN doesnt exists", "MSISDN doesnt exists"]);
         }
+
+        $cfg = config("lookup.RequiredFields");
+        $count = count($cfg);
+
+        $array = json_decode($data,true);
+
+
+
+
     }
 
-    /*TODO: If error exists put it in a variable and echo message instead of prewritten errormsg in the code
-     * feed this an JSON array
-     */
 
+
+
+    /**
+     * Takes guzzle response as a parameter and checks if Fault reason exists,
+     * which means error.
+     *
+     * @param $body
+     * @return bool
+     */
     public function ErrorOrNot($body){
         $obj = json_decode($body);
 
@@ -99,6 +145,12 @@ class MRegController extends Controller
         }
     }
 
+    /**
+     * Activates mobile user if SIM card exists
+     *
+     * @param $msisdn
+     * @return \Psr\Http\Message\StreamInterface
+     */
     public function ActivateMobileUser($msisdn){
         $model = new MRegModel();
         $data = $model->ActivateMobileUser($msisdn);
@@ -106,6 +158,12 @@ class MRegController extends Controller
         return $data;
     }
 
+    /**
+     * Check if SIM card has been made. Kiuru-RA doesn't create sim cards
+     *
+     * @param $msisdn
+     * @return bool
+     */
     public function CheckIfSimExists($msisdn){
         $model = new MRegModel();
         $data = $model->GetSimCardData($msisdn);
@@ -117,7 +175,12 @@ class MRegController extends Controller
         }
     }
 
-
+    /**
+     * Changes user state to INACTIVE.
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function DeactivateMobileUser(Request $request){
         $msisdn = $request->route("msisdn");
         $model = new MRegModel();
@@ -130,7 +193,13 @@ class MRegController extends Controller
         }
     }
 
-
+    /**
+     * Sends test signature request. This method is called with ajax on userinfo page.
+     * Returns JsonResponse containing the mobile user accounts state.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function TestSignature(Request $request){
         $msisdn = $request->route("msisdn");
         $model = new MRegModel();
@@ -151,6 +220,17 @@ class MRegController extends Controller
 
     }
 
+    /**
+     * Creates a mobile user. This method includes a config containing
+     * information on required fields. Validates the form input and
+     * returns back the form on error.
+     *
+     * Checks if SIM card exists. If user exists, returns edit user page.
+     *
+     *
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
     public function CreateMobileUser(Request $request){
 
         $cfg = config("registration.RequiredFields");
@@ -159,16 +239,12 @@ class MRegController extends Controller
         $array = array();//for form input validation
         $info = array();//passing input to view
 
-
         for($i = 0; $i < $count; $i++){
-
            $first = $cfg[$i]["formID"];
            $second = $cfg[$i]["options"];
 
            $array +=[$first => $second];//for validation
-
            $info +=[$i => $request->input($first)];
-
         }
 
         $this->validate($request,$array);
@@ -181,7 +257,6 @@ class MRegController extends Controller
 
         if($this->CheckIfUserExists($msisdn) !== true){
             return redirect("edituser/$msisdn")->with("msg","User already exists!");
-            //return Redirect::back()->withErrors(["ERROR: User already exists", ""])->withInput();
         }else{
 
             //create user
@@ -203,6 +278,12 @@ class MRegController extends Controller
         }
     }
 
+    /**
+     * Returns edit view with users data.
+     *
+     * @param $msisdn
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function EditMobileUserView($msisdn){
         $model = new MRegModel();
         $data = $model->GetMobileUserData($msisdn);
@@ -223,7 +304,6 @@ class MRegController extends Controller
 
         foreach($array["MSS_RegistrationResp"]["UseCase"]["Outputs"] as $key=>$val){
             foreach($val as $k=>$v){
-
                 if($this->in_arrayi($v,$requiredFields)){
                     $value = last($val);
                     $v = strtolower($v);
@@ -233,14 +313,25 @@ class MRegController extends Controller
         }
 
         return view("pages.updateuser",["data" => $data])->with("cfg",$cfg);
-
     }
 
-    //for case insensitive array lookup
+    /**
+     * Used for case insensitive array handling
+     *
+     * @param $needle
+     * @param $haystack
+     * @return bool
+     */
     public function in_arrayi($needle,$haystack){
         return in_array(strtolower($needle), array_map("strtolower",$haystack));
     }
 
+    /**
+     * Used for editing / updating users through edit form.
+     *
+     * @param Request $request
+     * @return mixed
+     */
     public function UpdateUser(Request $request){
         //get required fields data
         $cfg = config("registration.RequiredFields");
@@ -248,7 +339,6 @@ class MRegController extends Controller
 
         $array = array();//for form input validation
         $info = array();//passing input to view
-
 
         for($i = 0; $i < $count; $i++){
             $first = $cfg[$i]["formID"];
@@ -262,7 +352,6 @@ class MRegController extends Controller
         $this->validate($request,$array);
         $msisdn = $request->input("msisdn");
 
-
         $model = new MRegModel();
         $data = $model->UpdateUser($info);
         $obj = json_decode($data);
@@ -275,6 +364,12 @@ class MRegController extends Controller
         }
     }
 
+    /**
+     * Uses DeleteMobileUser to delete user.
+     *
+     * @param $msisdn
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function DeleteUser($msisdn){
         $model = new MRegModel();
         $data = $model->DeleteMobileUser($msisdn);
@@ -286,8 +381,6 @@ class MRegController extends Controller
         }else{
             return view("pages.index")->with("msg"," {$msisdn} has been deleted");
         }
-
-
     }
 
 }

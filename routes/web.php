@@ -20,15 +20,13 @@ Route::get("/editmobileuser/{msisdn}","PagesController@EditMobileUser")->middlew
 
 
 //MReg routes
-Route::post("/","MRegController@CreateMobileUser")->middleware("auth");
+Route::post("/","MRegController@CreateMobileUser")->middleware("auth","clearance");
 Route::any("/userinfo","MRegController@LookupUser")->middleware("auth");
 Route::get("/deactivate/{msisdn}","MRegController@DeactivateMobileUser")->middleware("auth");
 Route::get("/testsignature/{msisdn}","MRegController@TestSignature")->middleware("auth");
-//Route::post("/edit","MRegController@EditMobileUser");
 Route::get("/edituser/{msisdn}","MRegController@EditMobileUserView")->middleware("auth","clearance");
 Route::post("/submitedits","MRegController@UpdateUser")->middleware("auth","clearance");
 Route::get("/deleteuser/{msisdn}","MRegController@DeleteUser")->middleware("auth");
-
 
 
 //for testing

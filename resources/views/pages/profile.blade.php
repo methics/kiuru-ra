@@ -41,7 +41,7 @@
                         {{ Form::password("password_confirmation",array("class" => "form-control")) }}
                     </div>
 
-                    {{Form::submit("Add", array("class" => "btn btn-primary")) }}
+                    {{Form::submit("Update", array("class" => "btn btn-primary")) }}
                     {!! Form::close() !!}
 
             </div>

@@ -9,6 +9,8 @@
 
     <title>{{config("app.name", "Kiuru-RA")}}</title>
 
+    <!-- google font -->
+    <link href="https://fonts.googleapis.com/css?family=Cabin" rel="stylesheet">
 
 </head>
 <body>

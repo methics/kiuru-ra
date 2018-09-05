@@ -2,10 +2,12 @@ $body-bg: #fff;
 $primary-color: darken(purple, 5%);
 $lighter-primary: lighten(purple, 10%);
 
+$font-stack: Cabin, sans-serif;
 
 
 body{
   background-color: $body-bg;
+  font-family: $font-stack;
 }
 input[type=text],input[type=email],input[type=password]{
   height: 30px;
@@ -70,3 +72,4 @@ label{
 .btn-info{
   border-radius: 20px;
 }
+

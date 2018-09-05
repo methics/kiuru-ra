@@ -35,7 +35,7 @@ class ClearanceMiddleware {
             }
         }
 
-        if($request->is("edituser")){
+        if($request->is("edituser/*")){
             if(!Auth::user()->hasPermissionTo("edituser")){
                 abort("401");
             }else{
@@ -43,14 +43,14 @@ class ClearanceMiddleware {
             }
         }
 
+        if($request->is("deleteuser/*")){
+            if(!Auth::user()->hasPermissionTo("deletemobileuser")){
+                abort("401");
+            }else{
+                return $next($request);
+            }
+        }
 
         return $next($request);
-
-
-
-
     }
-
-
-
 }

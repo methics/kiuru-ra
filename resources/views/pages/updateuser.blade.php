@@ -47,7 +47,7 @@
 
 
                     @if($errors->has($formID))
-                        {{Form::text($cfg[$i]["formID"],$placeholder,["class" => "form-control has-error reg-input reg-input-error"])}}
+                        {{Form::text($cfg[$i]["formID"],$placeholder,["class" => "form-control has-error reg-input has-success form-input-error"])}}
                     @else
 
                         {{Form::text($cfg[$i]["formID"],$placeholder,["class" => "form-control reg-input"])}}

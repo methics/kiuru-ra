@@ -4,6 +4,12 @@
 
 @section('content')
 
+    @if(Session::has('flash_message'))
+        <p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session('flash_message') }}</p>
+    @endif
+
+
+
     <div class='col-lg-4 col-lg-offset-4'>
         <h1><i class='fa fa-key'></i> Edit Role: {{$role->name}}</h1>
         <hr>

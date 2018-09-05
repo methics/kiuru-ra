@@ -10473,6 +10473,7 @@ a.text-dark:focus {
 
 body {
   background-color: #fff;
+  font-family: 'Cabin', sans-serif;
 }
 
 input[type=text],

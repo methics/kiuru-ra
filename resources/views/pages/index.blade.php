@@ -15,14 +15,13 @@
             @endif
 
 
-<br><br>
-
             <h1>Welcome to Kiuru-RA</h1>
 
+            <p>Homepage could contain information about Kiuru-RA, or maybe about
+            the company using this product.</p>
 
 
-
-</div>
+        </div>
     </div>
 
 

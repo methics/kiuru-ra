@@ -1,6 +1,8 @@
 $body-bg: #fff;
 $primary-color: darken(purple, 5%);
 $lighter-primary: lighten(purple, 10%);
+$label-color: #6f42c1;
+
 
 $font-stack: Cabin, sans-serif;
 
@@ -32,9 +34,9 @@ input[type=text],input[type=email],input[type=password]{
   font-size: 18px;
 }
 
-.required-mark{
+.asterisk{
   color: red;
-  font-size: 20px;
+
 }
 
 .alert-icon{
@@ -57,7 +59,7 @@ input[type=text],input[type=email],input[type=password]{
 }
 
 label{
-  color: #6f42c1;
+  color: $label-color;
 }
 
 .btn-primary{

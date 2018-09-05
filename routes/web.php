@@ -46,3 +46,4 @@ Route::resource("permissions","PermissionController")->middleware("auth");
 
 
 
+

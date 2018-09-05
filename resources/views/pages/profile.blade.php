@@ -4,13 +4,9 @@
             <div class="row justify-content-md-center">
                 <div class="col col-lg-4">
 
-                    @if($errors->any())
-                        <h4>{{$errors->first()}}</h4>
+                    @if(Session::has("flash_message"))
+                        <p class="alert alert-danger">{{Session::get("flash_message")}}</p>
                     @endif
-
-                        @if(isset($msg))
-                            <p class="alert alert-info">{{$msg}}</p>
-                        @endif
 
                     @php
                         $user = Auth::User();
@@ -42,7 +38,9 @@
                     </div>
 
                     {{Form::submit("Update", array("class" => "btn btn-primary")) }}
+                        <a href="/" class="btn btn-primary" role="button">Back</a>
                     {!! Form::close() !!}
+
 
             </div>
 

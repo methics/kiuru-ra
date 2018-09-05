@@ -5,12 +5,12 @@
 
             @if(isset($data))
                 <?php
-                $fname = $data["fname"];
-                $lname = $data["surname"];
-                $msisdn = $data["msisdn"];
-                $state = $data["state"];
-                $country = $data["country"];
-                $lang = $data["lang"];
+                $fname      = $data["fname"];
+                $lname      = $data["surname"];
+                $msisdn     = $data["msisdn"];
+                $state      = $data["state"];
+                $country    = $data["country"];
+                $lang       = $data["lang"];
                 ?>
             @endif
 

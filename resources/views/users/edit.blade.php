@@ -5,8 +5,13 @@
 @section('title', '| Edit User')
 
 @section('content')
+<div class="row justify-content-md-center">
+    <div class='col col-lg-3'>
 
-    <div class='col-lg-4 col-lg-offset-4'>
+
+        @if(Session::has("flash_message"))
+            <p class="alert alert-danger">{{Session::get("flash_message")}}</p>
+        @endif
 
         <h1><i class='fa fa-user-plus'></i> Edit {{$user->name}}</h1>
         <hr>
@@ -46,9 +51,10 @@
         </div>
 
         {{ Form::submit('Add', array('class' => 'btn btn-primary')) }}
+            <a href="/users" class="btn btn-primary" role="button">Back</a>
 
         {{ Form::close() }}
 
     </div>
-
+</div>
 @endsection

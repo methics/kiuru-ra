@@ -1,24 +1,22 @@
 @extends("templates.app")
 @section("content")
 
-    <div class="row justify-content-md-center">
-        <div class="col col-lg-3">
+    <div class="row justify-content-md-center" style="margin-bottom: 50px;">
+        <div class="col col-lg-2">
+            <h1>Edit User</h1>
 
             @if($errors->any())
                 <p class="alert alert-danger"><img src="{{URL::asset("images/alert.svg")}}" class="alert-icon">
-                    Fill all required fields!
+                    Fill all fields marked with *
                 </p>
             @endif
+        </div>
+    </div>
 
-            @if(session()->has('msg'))
-                <div class="alert alert-success">
-                    {{ session()->get('msg') }}
-                </div>
-            @endif
+    <div class="row justify-content-md-center">
+        <div class="col col-lg-3">
 
-
-            <h1>Edit user</h1>
-            <br>
+            <h4>User information</h4>
 
             {!! Form::open(["action" => "MRegController@UpdateUser", "method"=> "POST"]) !!}
             @csrf
@@ -28,7 +26,9 @@
             @for($i=0;$i<$count;$i++)
 
                 @if($cfg[$i]["label"] == "address")
-                    <br><h4>Address</h4>
+                    </div>
+                    <div class="col col-lg-3">
+                    <h4>Address</h4>
                 @endif
 
                 <?php
@@ -41,24 +41,26 @@
                     {{Form::label($cfg[$i]["label"],"")}}
 
                     <?php if(strpos($cfg[$i]["options"],"required") !== false){
-                        echo "<span class='required-mark'>*</span>";
+                        echo "<span class='asterisk'>*</span>";
                         //todo: MSISDN cant be changed with this, so it should be readonly
                     }?>
 
-
                     @if($errors->has($formID))
-                        {{Form::text($cfg[$i]["formID"],$placeholder,["class" => "form-control has-error reg-input has-success form-input-error"])}}
+                        {{Form::text($cfg[$i]["formID"],$placeholder,["class" => "form-control reg-input form-input-error"])}}
                     @else
-
-                        {{Form::text($cfg[$i]["formID"],$placeholder,["class" => "form-control reg-input"])}}
+                        @if($formID == "msisdn")
+                            {{Form::text($cfg[$i]["formID"],$placeholder,["class" => "form-control reg-input","readonly"])}}
+                        @else
+                            {{Form::text($cfg[$i]["formID"],$placeholder,["class" => "form-control reg-input"])}}
+                        @endif
                     @endif
                 </div>
             @endfor
 
-            <br>
+
             {{Form::submit("Submit",["class" => "btn btn-primary"])}}
             {!! Form::close() !!}
-            <br><br>
+
         </div>
 
 

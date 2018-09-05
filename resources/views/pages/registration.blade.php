@@ -2,22 +2,20 @@
 @section("content")
 
 
-    <div class="row justify-content-md-center">
-        <div class="col col-lg-2">
+    <div class="row justify-content-md-center" style="margin-bottom: 50px;">
+        <div class="col col-lg-3">
             <h1>Register user</h1>
+
+            @if($errors->any())
+                <p class="alert alert-danger"><img src="{{URL::asset("images/alert.svg")}}" class="alert-icon">
+                    Fill all fields marked with *
+                </p>
+            @endif
         </div>
-
-
     </div>
 
     <div class="row justify-content-md-center">
         <div class="col col-lg-3">
-
-            @if($errors->any())
-                <p class="alert alert-danger"><img src="{{URL::asset("images/alert.svg")}}" class="alert-icon">
-                    Fill all required fields!
-                </p>
-            @endif
 
             <h4>User info</h4>
 
@@ -29,7 +27,7 @@
                     @if($cfg[$i]["label"] == "address")
         </div>
         <div class="col col-lg-3">
-                        <h4>Address</h4>
+                    <h4>Address</h4>
                     @endif
 
                     <?php $formID = $cfg[$i]["formID"]; ?>
@@ -38,7 +36,7 @@
                         {{Form::label($cfg[$i]["label"],"")}}
 
                         <?php if(strpos($cfg[$i]["options"],"required") !== false){
-                            echo "<span class='required-mark'>*</span>";
+                            echo "<span class='asterisk'>*</span>";
                         }?>
 
                         @if($errors->has($formID))
@@ -55,7 +53,11 @@
     </div>
 
     <div class="row justify-content-md-center">
-        <div class="col col-lg-3"></div>
+        <div class="col col-lg-12 text-center">
+            <br><br><br>
+            {{Form::submit("Submit",["class" => "btn btn-primary"])}}
+            {!! Form::close() !!}
+        </div>
     </div>
 
 @endsection

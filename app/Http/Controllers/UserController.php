@@ -107,6 +107,17 @@ class UserController extends Controller
     public function update(Request $request, $id) {
         $user = User::findOrFail($id); //Get role specified by id
 
+        $password = $request->input("password");
+        $password2 = $request->input("password_confirmation");
+
+
+        if(!isset($password, $password2)){
+            return back()->with("flash_message","Fill both password fields");
+        }
+        if($password !== $password2){
+            return back()->with("flash_message","Your passwords did not match!");
+        }
+
         //Validate name, email and password fields
         $this->validate($request, [
             'name'=>'required|max:120',
@@ -143,7 +154,5 @@ class UserController extends Controller
                 'User successfully deleted.');
     }
 
-    public function ChangePassword(){
 
-    }
 }

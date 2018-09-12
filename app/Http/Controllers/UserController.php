@@ -131,7 +131,7 @@ class UserController extends Controller
             $user->roles()->sync($roles);  //If one or more role is selected associate user to roles
         }
         else {
-            //$user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
+            $user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
         }
         return redirect()->route('users.index')
             ->with('flash_message',

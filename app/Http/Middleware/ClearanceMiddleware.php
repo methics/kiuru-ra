@@ -51,6 +51,17 @@ class ClearanceMiddleware {
             }
         }
 
+        if($request->is("logs/")){
+            if(!Auth::user()->hasPermissionTo("logs")){
+                abort("401");
+            }else{
+                return $next($request);
+            }
+        }
+
+
+
+
         return $next($request);
     }
 }

@@ -13,12 +13,23 @@ class MRegModel
     private $username;
     private $password;
 
+    /**
+     * MRegModel constructor. Gets API information from .env-file located in the root of the project.
+     */
     public function __construct(){
         $this->url      = env("API_URL");
         $this->username = env("API_USER");
         $this->password = env("API_PASS");
     }
 
+    /**
+     * SendPost method uses guzzle to send data to API and comes back with the return.
+     * After returning the variable with data, it gets returned to a controller.
+     *
+     * @param $string_json
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws GuzzleException
+     */
     public function SendPost($string_json){
         $client = new Client();
         $options = array(
@@ -36,6 +47,13 @@ class MRegModel
         return $body;
     }
 
+    /**
+     * Gets all mobile user data available from api.
+     *
+     * @param $msisdn
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws GuzzleException
+     */
     public function GetMobileUserData($msisdn){
         $string_json = "{
           \"MSS_RegistrationReq\": {
@@ -56,6 +74,14 @@ class MRegModel
         return $body;
     }
 
+
+    /**
+     * Creates mobile user using API and CreateMobileUser method
+     *
+     * @param $info
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws GuzzleException
+     */
     public function CreateMobileUser($info){
         $data = (object)$info;
         $cfg = config("registration.RequiredFields");
@@ -103,6 +129,14 @@ class MRegModel
         return $body;
     }
 
+
+    /**
+     * Activates the mobile user if possible, through API
+     *
+     * @param $msisdn
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws GuzzleException
+     */
     public function ActivateMobileUser($msisdn){
 
         $string_json = "{
@@ -124,6 +158,13 @@ class MRegModel
         return $body;
     }
 
+    /**
+     * Gets SIM card data through API
+     *
+     * @param $msisdn
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws GuzzleException
+     */
     public function GetSimCardData($msisdn){
         $string_json = "{
             \"MSS_RegistrationReq\": {
@@ -144,6 +185,13 @@ class MRegModel
         return $body;
     }
 
+    /**
+     * Deactivates user if possible, through API.
+     *
+     * @param $msisdn
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws GuzzleException
+     */
     public function DeactivateUser($msisdn){
         $string_json = "{
             \"MSS_RegistrationReq\": {
@@ -164,6 +212,14 @@ class MRegModel
         return $body;
     }
 
+    /**
+     * Tests users signature if possible. Returns "Mobile user account has state INACTIVE" if inactive,
+     * and VALID_SIGNATURE if everything is ok. Configurable through registration config.
+     *
+     * @param $msisdn
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws GuzzleException
+     */
     public function TestSignature($msisdn){
 
         $cfg = config("registration.AdditionalServices");
@@ -207,6 +263,13 @@ class MRegModel
         return $body;
     }
 
+    /**
+     * Updates users information through API.
+     *
+     * @param $info
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws GuzzleException
+     */
     public function UpdateUser($info){
         $data = (object)$info;
         $cfg = config("registration.RequiredFields");
@@ -262,6 +325,13 @@ class MRegModel
         return $body;
     }
 
+    /**
+     * Deletes the mobile user
+     *
+     * @param $msisdn
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws GuzzleException
+     */
     public function DeleteMobileUser($msisdn){
         $string_json = "
         {

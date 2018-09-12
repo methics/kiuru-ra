@@ -17,6 +17,7 @@ Route::get("/registration","PagesController@registration")->middleware("auth","c
 Route::get("/lookup","PagesController@lookup")->name("lookup")->middleware("auth","clearance");
 Route::get("/profile","PagesController@Profile")->middleware("auth");
 Route::get("/editmobileuser/{msisdn}","PagesController@EditMobileUser")->middleware("auth","clearance");
+Route::get("/logs","PagesController@Logs")->middleware("auth","clearance");
 
 
 //MReg routes

@@ -10,6 +10,7 @@ use PhpParser\Error;
 use Redirect;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Auth;
 
 class MRegController extends Controller
 {
@@ -31,6 +32,7 @@ class MRegController extends Controller
      * @return \Psr\Http\Message\StreamInterface
      */
     public function GetUserDataByMsisdn($msisdn){
+
         $model = new MRegModel();
         $body = $model->GetMobileUserData($msisdn);
         return $body;
@@ -65,7 +67,6 @@ class MRegController extends Controller
         ]);
 
         $msisdn = $request->input("msisdn");
-
         $data = $this->GetUserDataByMsisdn($msisdn);
 
         if($this->ErrorOrNot($data) == true){
@@ -95,38 +96,17 @@ class MRegController extends Controller
             }
         }
 
+        //For logging activity
+        $ip = $_SERVER["REMOTE_ADDR"];
+
+        $userID     = Auth::user()->id;
+        $userName   = Auth::user()->name;
+        $activity = activity()->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName looked up $msisdn");
+
+
         $data = array("fname"=>"$givenName","surname"=>"$surName","msisdn"=>"$msisdn","state"=>"$state","country"=>$country,"lang"=>$lang);
         return view("pages.userinfo",["data" => $data]);
     }
-
-    /**
-     * @param Request $request
-     * @return mixed
-     */
-    public function LookUpUser2(Request $request){
-        $this->validate($request,[
-            "msisdn" => "required",
-        ]);
-
-        $msisdn = $request->input("msisdn");
-        $data = $this->GetUserDataByMsisdn($msisdn);
-
-        if($this->ErrorOrNot($data) == true){
-            return Redirect::back()->withErrors(["This MSISDN doesnt exists", "MSISDN doesnt exists"]);
-        }
-
-        $cfg = config("lookup.RequiredFields");
-        $count = count($cfg);
-
-        $array = json_decode($data,true);
-
-
-
-
-    }
-
-
-
 
     /**
      * Takes guzzle response as a parameter and checks if Fault reason exists,
@@ -223,9 +203,9 @@ class MRegController extends Controller
     /**
      * Creates a mobile user. This method includes a config containing
      * information on required fields. Validates the form input and
-     * returns back the form on error.
+     * returns back to the form on error.
      *
-     * Checks if SIM card exists. If user exists, returns edit user page.
+     * Checks if SIM card exists. If user exists, returns to editable user form
      *
      *
      * @param Request $request
@@ -239,6 +219,8 @@ class MRegController extends Controller
         $array = array();//for form input validation
         $info = array();//passing input to view
 
+
+
         for($i = 0; $i < $count; $i++){
            $first = $cfg[$i]["formID"];
            $second = $cfg[$i]["options"];
@@ -249,6 +231,17 @@ class MRegController extends Controller
 
         $this->validate($request,$array);
         $msisdn = $request->input("msisdn");
+
+
+
+        //For logging activity
+        $ip = $_SERVER["REMOTE_ADDR"];
+
+        $userID     = Auth::user()->id;
+        $userName   = Auth::user()->name;
+        $activity = activity()->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName created mobile user $msisdn");
+
+
 
         if($this->CheckIfSimExists($msisdn) !== true){
 
@@ -352,6 +345,15 @@ class MRegController extends Controller
         $this->validate($request,$array);
         $msisdn = $request->input("msisdn");
 
+        //For logging activity
+        $ip = $_SERVER["REMOTE_ADDR"];
+
+        $userID     = Auth::user()->id;
+        $userName   = Auth::user()->name;
+        $activity = activity()->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName updated $msisdn information");
+
+
+
         $model = new MRegModel();
         $data = $model->UpdateUser($info);
         $obj = json_decode($data);
@@ -375,6 +377,15 @@ class MRegController extends Controller
         $data = $model->DeleteMobileUser($msisdn);
 
         $obj = json_decode($data);
+
+        //For logging activity
+        $ip = $_SERVER["REMOTE_ADDR"];
+
+        $userID     = Auth::user()->id;
+        $userName   = Auth::user()->name;
+        $activity = activity()->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName deleted mobile user $msisdn");
+
+
 
         if(isset($obj->Fault->Reason)){
             return view("pages.lookup")->with("msg","Could not delete user");

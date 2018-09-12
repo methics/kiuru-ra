@@ -101,7 +101,7 @@ class MRegController extends Controller
 
         $userID     = Auth::user()->id;
         $userName   = Auth::user()->name;
-        $activity = activity()->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName looked up $msisdn");
+        activity("lookup")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName looked up $msisdn");
 
 
         $data = array("fname"=>"$givenName","surname"=>"$surName","msisdn"=>"$msisdn","state"=>"$state","country"=>$country,"lang"=>$lang);
@@ -167,6 +167,16 @@ class MRegController extends Controller
         $data = $model->DeactivateUser($msisdn);
 
         if($this->ErrorOrNot($data) == false){
+
+            //For logging activity
+            $ip = $_SERVER["REMOTE_ADDR"];
+
+            $userID     = Auth::user()->id;
+            $userName   = Auth::user()->name;
+            activity("deactivatemobileuser")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName deactivated $msisdn");
+
+
+
             return view("pages.lookup");
         }else{
             return Redirect::back()->withErrors(["Error deactivating user", "Error deactivating user"]);
@@ -239,7 +249,7 @@ class MRegController extends Controller
 
         $userID     = Auth::user()->id;
         $userName   = Auth::user()->name;
-        $activity = activity()->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName created mobile user $msisdn");
+        $activity = activity("createmobileuser")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName created mobile user $msisdn");
 
 
 
@@ -304,6 +314,15 @@ class MRegController extends Controller
                 }
             }
         }
+
+        //For logging activity
+        $ip = $_SERVER["REMOTE_ADDR"];
+
+        $userID     = Auth::user()->id;
+        $userName   = Auth::user()->name;
+        activity("editmobileuser")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName updated $msisdn information");
+
+
 
         return view("pages.updateuser",["data" => $data])->with("cfg",$cfg);
     }
@@ -383,7 +402,7 @@ class MRegController extends Controller
 
         $userID     = Auth::user()->id;
         $userName   = Auth::user()->name;
-        $activity = activity()->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName deleted mobile user $msisdn");
+        activity("deletemobileuser")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName deleted mobile user $msisdn");
 
 
 

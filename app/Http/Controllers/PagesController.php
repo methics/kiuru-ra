@@ -73,12 +73,51 @@ class PagesController extends Controller
         return view("pages.profile");
     }
 
-    public function Logs(){
+    public function Logs($id){
 
-        $activity = Activity::all();
 
-        return view("pages.logs")->with("activity",$activity);
+        if($id == "default"){
+            $activity = Activity::where("log_name","default")->get();
+
+            return view("logs.default")->with("activities",$activity);
+        }
+
+        if($id == "lookup"){
+            $activity = Activity::where("log_name","lookup")->get();
+
+            return view("logs.default")->with("activities",$activity);
+        }
+
+        if($id == "createmobileuser"){
+            $activity = Activity::where("log_name","createmobileuser")->get();
+
+            return view("logs.default")->with("activities",$activity);
+        }
+
+        if($id == "deletemobileuser"){
+            $activity = Activity::where("log_name","deletemobileuser")->get();
+            return view("logs.default")->with("activities",$activity);
+        }
+
+        if($id == "all"){
+            $activity = Activity::all();
+            return view("logs.default")->with("activities",$activity);
+        }
+
+        if($id == "deactivate"){
+            $activity = Activity::where("log_name","deactivatemobileuser")->get();
+            return view("logs.default")->with("activities",$activity);
+        }
+
+        if($id == "editmobileuser"){
+            $activity = Activity::where("log_name","editmobileuser")->get();
+            return view("logs.default")->with("activities",$activity);
+        }
+
+
+
     }
+
 
 
 

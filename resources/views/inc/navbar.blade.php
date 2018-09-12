@@ -22,7 +22,7 @@
                     <a class="nav-link" href="/users">Admin</a>
                 </li>
                 <li>
-                    <a class="nav-link" href="/logs">Logs</a>
+                    <a class="nav-link" href="/logs/all">Logs</a>
                 </li>
             @endrole
         </ul>

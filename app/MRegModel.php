@@ -6,6 +6,8 @@ namespace App;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 
+
+
 class MRegModel
 {
 

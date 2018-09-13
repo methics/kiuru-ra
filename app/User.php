@@ -13,6 +13,7 @@ class User extends Authenticatable
     use Notifiable;
     use HasRoles; //spatie-laravel-permission
 
+
     /**
      * The attributes that are mass assignable.
      *
@@ -35,6 +36,8 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = bcrypt($password);
     }
+
+
 
 
 

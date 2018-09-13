@@ -53,7 +53,6 @@
 
                 </table>
             </div>
-            {{$activities->links()}}
             <br><br>
 
         </div>

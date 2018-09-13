@@ -18,6 +18,7 @@ Route::get("/lookup","PagesController@lookup")->name("lookup")->middleware("auth
 Route::get("/profile","PagesController@Profile")->middleware("auth");
 Route::get("/editmobileuser/{msisdn}","PagesController@EditMobileUser")->middleware("auth","clearance");
 Route::get("/logs/{id}","PagesController@Logs")->middleware("auth","clearance");
+Route::post("/search","PagesController@SearchLogs");
 
 
 //MReg routes

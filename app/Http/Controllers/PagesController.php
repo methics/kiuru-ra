@@ -7,7 +7,6 @@ use App\MRegModel;
 use Spatie\Activitylog\Models\Activity;
 
 
-
 class PagesController extends Controller
 {
 
@@ -24,42 +23,6 @@ class PagesController extends Controller
         return view("pages.registration")->with("cfg",$cfg);
     }
 
-    public function EditMobileUser($msisdn){
-        $cfg = config("registration.RequiredFields");
-        $count = count($cfg);
-
-        $fields = array();
-        $foundFields = array();
-
-        for($i = 0; $i < $count; $i++){
-            $mregName = $cfg[$i]["mregname"];
-
-            array_push($fields,$mregName);
-
-        }
-
-        print_r($fields);
-
-
-        $model = new MRegModel();
-        $data = $model->GetMobileUserData($msisdn);
-
-        $array = json_decode($data,true);
-
-        foreach($array["MSS_RegistrationResp"]["UseCase"]["Outputs"] as $key=>$val) {
-            foreach ($val as $k => $v) {
-
-                $value = $v;
-                if(in_array($value,$fields)){
-                    echo $value;
-                }
-
-            }
-        }
-
-        //return view("pages.editmobileuser")->with("cfg",$cfg)->with("data",$data);
-
-    }
 
     public function lookup(){
         return view("pages.lookup");
@@ -77,44 +40,59 @@ class PagesController extends Controller
 
 
         if($id == "default"){
-            $activity = Activity::where("log_name","default")->get();
+            $activity = Activity::where("log_name","default")->paginate(5);
 
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "lookup"){
-            $activity = Activity::where("log_name","lookup")->get();
+            $activity = Activity::where("log_name","lookup")->paginate(5);
 
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "createmobileuser"){
-            $activity = Activity::where("log_name","createmobileuser")->get();
+            $activity = Activity::where("log_name","createmobileuser")->paginate(5);
 
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "deletemobileuser"){
-            $activity = Activity::where("log_name","deletemobileuser")->get();
+            $activity = Activity::where("log_name","deletemobileuser")->paginate(5);
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "all"){
-            $activity = Activity::all();
+            $activity = Activity::paginate(5);
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "deactivate"){
-            $activity = Activity::where("log_name","deactivatemobileuser")->get();
+            $activity = Activity::where("log_name","deactivatemobileuser")->paginate(5);
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "editmobileuser"){
-            $activity = Activity::where("log_name","editmobileuser")->get();
+            $activity = Activity::where("log_name","editmobileuser")->paginate(5);
             return view("logs.default")->with("activities",$activity);
         }
 
+        if($id == "login"){
+            $activity = Activity::where("log_name","login")->paginate(5);
+            return view("logs.default")->with("activities",$activity);
+        }
 
+        $activity = Activity::paginate(5);
+        return view("logs.default")->with("activities",$activity);
+
+    }
+
+    public function SearchLogs(Request $request){
+        $text = $request->input("search");
+
+        $logs = Activity::where("log_name",$text)->orWhere("description","like","%" . $text . "%")->get();
+
+        return view("logs.searchresult")->with("activities",$logs);
 
     }
 

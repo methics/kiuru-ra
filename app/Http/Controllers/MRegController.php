@@ -320,7 +320,7 @@ class MRegController extends Controller
 
         $userID     = Auth::user()->id;
         $userName   = Auth::user()->name;
-        activity("editmobileuser")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName updated $msisdn information");
+        activity("editmobileuser")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName edited $msisdn information");
 
 
 

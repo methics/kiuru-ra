@@ -90,7 +90,11 @@ class PagesController extends Controller
     public function SearchLogs(Request $request){
         $text = $request->input("search");
 
-        $logs = Activity::where("log_name",$text)->orWhere("description","like","%" . $text . "%")->get();
+        $logs = Activity::where("log_name",$text)
+            ->orWhere("description","like","%" . $text . "%")
+            ->orWhere("properties","like","%" . $text . "%")
+            ->orWhere("causer_id", "like","%" . $text . "%")
+            ->get();
 
         return view("logs.searchresult")->with("activities",$logs);
 

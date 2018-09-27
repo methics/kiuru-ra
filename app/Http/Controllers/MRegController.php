@@ -74,7 +74,6 @@ class MRegController extends Controller
         }
 
         $array = json_decode($data,true);
-        //TODO: config for this ????
 
         foreach($array["MSS_RegistrationResp"]["UseCase"]["Outputs"] as $key=>$val){
             foreach($val as $k=>$v){
@@ -101,7 +100,7 @@ class MRegController extends Controller
 
         $userID     = Auth::user()->id;
         $userName   = Auth::user()->name;
-        activity("lookup")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName looked up $msisdn");
+        activity("lookup")->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName looked up $msisdn");
 
 
         $data = array("fname"=>"$givenName","surname"=>"$surName","msisdn"=>"$msisdn","state"=>"$state","country"=>$country,"lang"=>$lang);
@@ -173,7 +172,7 @@ class MRegController extends Controller
 
             $userID     = Auth::user()->id;
             $userName   = Auth::user()->name;
-            activity("deactivatemobileuser")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName deactivated $msisdn");
+            activity("deactivatemobileuser")->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName deactivated $msisdn");
 
 
 
@@ -230,7 +229,6 @@ class MRegController extends Controller
         $info = array();//passing input to view
 
 
-
         for($i = 0; $i < $count; $i++){
            $first = $cfg[$i]["formID"];
            $second = $cfg[$i]["options"];
@@ -243,13 +241,12 @@ class MRegController extends Controller
         $msisdn = $request->input("msisdn");
 
 
-
         //For logging activity
         $ip = $_SERVER["REMOTE_ADDR"];
 
         $userID     = Auth::user()->id;
         $userName   = Auth::user()->name;
-        $activity = activity("createmobileuser")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName created mobile user $msisdn");
+        activity("createmobileuser")->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName created mobile user $msisdn");
 
 
 
@@ -320,9 +317,7 @@ class MRegController extends Controller
 
         $userID     = Auth::user()->id;
         $userName   = Auth::user()->name;
-        activity("editmobileuser")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName edited $msisdn information");
-
-
+        activity("editmobileuser")->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName edited $msisdn information");
 
         return view("pages.updateuser",["data" => $data])->with("cfg",$cfg);
     }
@@ -369,9 +364,7 @@ class MRegController extends Controller
 
         $userID     = Auth::user()->id;
         $userName   = Auth::user()->name;
-        $activity = activity()->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName updated $msisdn information");
-
-
+        activity()->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName updated $msisdn information");
 
         $model = new MRegModel();
         $data = $model->UpdateUser($info);
@@ -381,12 +374,12 @@ class MRegController extends Controller
             $error = $obj->Fault->reason;
             return Redirect::back()->withErrors(["ERROR : $error", "ERROR: $error"])->withInput();
         }else{
-            return Redirect::back()->with("msg","User edit success!");
+            return Redirect::back()->with("msg","User succesfully edited!");
         }
     }
 
     /**
-     * Uses DeleteMobileUser to delete user.
+     * Uses DeleteMobileUser to delete the user.
      *
      * @param $msisdn
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -402,15 +395,37 @@ class MRegController extends Controller
 
         $userID     = Auth::user()->id;
         $userName   = Auth::user()->name;
-        activity("deletemobileuser")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName deleted mobile user $msisdn");
-
-
+        activity("deletemobileuser")->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName deleted mobile user $msisdn");
 
         if(isset($obj->Fault->Reason)){
             return view("pages.lookup")->with("msg","Could not delete user");
         }else{
             return view("pages.index")->with("msg"," {$msisdn} has been deleted");
         }
+    }
+
+    public function ReactivateMobileUser($msisdn){
+
+        $model = new MRegModel();
+        $data = $model->ReactivateMobileUser($msisdn);
+
+        $obj = json_decode($data);
+
+        //For logging activity
+        $ip = $_SERVER["REMOTE_ADDR"];
+
+        $userID     = Auth::user()->id;
+        $userName   = Auth::user()->name;
+        activity("reactivatemobileuser")->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName Reactivated $msisdn");
+
+        if(isset($obj->Fault->Reason)){
+            $error = $obj->Fault->Reason;
+            return Redirect::back()->withErrors(["$error", "$error"]);
+        }else{
+            return view("pages.lookup")->with("msg","{$msisdn} reactivated succesfully!");
+        }
+
+
     }
 
 }

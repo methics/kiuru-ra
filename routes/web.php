@@ -14,11 +14,11 @@
 //page routes
 Route::get("/","PagesController@index")->middleware("auth");
 Route::get("/registration","PagesController@registration")->middleware("auth","clearance");
-Route::get("/lookup","PagesController@lookup")->name("lookup")->middleware("auth","clearance");
+Route::any("/lookup","PagesController@lookup")->name("lookup")->middleware("auth","clearance");
 Route::get("/profile","PagesController@Profile")->middleware("auth");
 Route::get("/editmobileuser/{msisdn}","PagesController@EditMobileUser")->middleware("auth","clearance");
 Route::get("/logs/{id}","PagesController@Logs")->middleware("auth","clearance");
-Route::post("/search","PagesController@SearchLogs");
+Route::any("/search","PagesController@SearchLogs")->middleware("auth");
 
 
 //MReg routes
@@ -29,6 +29,7 @@ Route::get("/testsignature/{msisdn}","MRegController@TestSignature")->middleware
 Route::get("/edituser/{msisdn}","MRegController@EditMobileUserView")->middleware("auth","clearance");
 Route::post("/submitedits","MRegController@UpdateUser")->middleware("auth","clearance");
 Route::get("/deleteuser/{msisdn}","MRegController@DeleteUser")->middleware("auth");
+Route::get("/reactivate/{msisdn}","MRegController@ReactivateMobileUser")->middleware("auth");
 
 
 //for testing

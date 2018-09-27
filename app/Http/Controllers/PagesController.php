@@ -40,45 +40,61 @@ class PagesController extends Controller
 
 
         if($id == "default"){
-            $activity = Activity::where("log_name","default")->paginate(5);
+            $activity = Activity::where("log_name","default")
+                ->orderBy("created_at","desc")
+                ->paginate(5);
 
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "lookup"){
-            $activity = Activity::where("log_name","lookup")->paginate(5);
+            $activity = Activity::where("log_name","lookup")
+                ->orderBy("created_at","desc")
+                ->paginate(5);
 
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "createmobileuser"){
-            $activity = Activity::where("log_name","createmobileuser")->paginate(5);
+            $activity = Activity::where("log_name","createmobileuser")
+                ->orderBy("created_at","desc")
+                ->paginate(5);
 
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "deletemobileuser"){
-            $activity = Activity::where("log_name","deletemobileuser")->paginate(5);
+            $activity = Activity::where("log_name","deletemobileuser")
+                ->orderBy("created_at","desc")
+                ->paginate(5);
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "all"){
-            $activity = Activity::paginate(5);
+            $activity = Activity::orderBy("created_at","desc")->paginate(5);
             return view("logs.default")->with("activities",$activity);
         }
 
-        if($id == "deactivate"){
-            $activity = Activity::where("log_name","deactivatemobileuser")->paginate(5);
-            return view("logs.default")->with("activities",$activity);
-        }
 
         if($id == "editmobileuser"){
-            $activity = Activity::where("log_name","editmobileuser")->paginate(5);
+            $activity = Activity::where("log_name","editmobileuser")
+                ->orderBy("created_at","desc")
+                ->paginate(5);
             return view("logs.default")->with("activities",$activity);
         }
 
         if($id == "login"){
-            $activity = Activity::where("log_name","login")->paginate(5);
+            $activity = Activity::where("log_name","login")
+                ->orderBy("created_at","desc")
+                ->paginate(5);
+            return view("logs.default")->with("activities",$activity);
+        }
+
+        if($id == "activations"){
+            $activity = Activity::where("log_name","reactivatemobileuser")
+                ->orWhere("log_name","deactivatemobileuser")
+                ->orderBy("created_at","desc")
+                ->paginate(5);
             return view("logs.default")->with("activities",$activity);
         }
 
@@ -94,7 +110,9 @@ class PagesController extends Controller
             ->orWhere("description","like","%" . $text . "%")
             ->orWhere("properties","like","%" . $text . "%")
             ->orWhere("causer_id", "like","%" . $text . "%")
-            ->get();
+            ->orderBy("created_at","desc")
+            ->paginate(5);
+        $logs->appends(["search" => "$text"]);
 
         return view("logs.searchresult")->with("activities",$logs);
 

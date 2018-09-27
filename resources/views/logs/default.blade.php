@@ -22,6 +22,7 @@
                 <a href="/logs/lookup" class="btn btn-default pull-right">Lookups</a>
                 <a href="/logs/deletemobileuser" class="btn btn-default pull-right">Deletes</a>
                 <a href="/logs/login" class="btn btn-default pull-right">Logins</a>
+                <a href="/logs/activations" class="btn btn-default pull-right">Activations</a>
             </h1>
             <hr>
 
@@ -34,7 +35,8 @@
                         <th>Description</th>
                         <th>Date/Time Added</th>
                         <th>IP-address</th>
-                        <th>User ID & Name</th>
+                        <th>Username</th>
+                        <th>User ID</th>
                     </tr>
                     </thead>
 
@@ -43,9 +45,10 @@
                         <tr>
                             <td>{{ $activity->log_name }}</td>
                             <td>{{ $activity->description }}</td>
-                            <td>{{ $activity->created_at->format('F d, Y h:ia') }}  - ( {{$activity->created_at->diffForHumans()}} )</td>
-                            <td>{{ $activity->getExtraProperty("IP") }}</td>
-                            <td>{{ $activity->causer_id }}</td>
+                            <td>{{ $activity->created_at->format('F d, Y h:ia') }}   ( {{$activity->created_at->diffForHumans()}} )</td>
+                            <td>{{ $activity->getExtraProperty("IP") }} </td>
+                            <td>{{ $activity->getExtraProperty("user") }}</td>
+                            <td>{{ $activity->causer_id }} </td>
                         </tr>
                     @endforeach
 

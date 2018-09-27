@@ -59,6 +59,8 @@
             <?php
             if($state == "ACTIVE"){
                 echo "<a href='/deactivate/{$msisdn}' class='btn btn-primary btn-lg' role='button'>Deactivate</a>";
+            }else{
+                echo "<a href='/reactivate/{$msisdn}' class='btn btn-primary btn-lg' role='button'>Reactivate</a>";
             }
             ?>
 

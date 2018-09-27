@@ -34,7 +34,7 @@ class LogSuccessfulLogin
 
         $userID     = Auth::user()->id;
         $userName   = Auth::user()->name;
-        activity("login")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName logged in");
+        activity("login")->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName logged in");
 
     }
 }

@@ -43,5 +43,12 @@ class PermissionsTableSeeder extends Seeder
             "guard_name" => "web",
             "created_at" => \Carbon\Carbon::now()->format("Y-m-d H:i:s"),
         ]);
+        DB::table("permissions")->insert([
+            "id"         => 6,
+            "name"       => "logs",
+            "guard_name" => "web",
+            "created_at" => \Carbon\Carbon::now()->format("Y-m-d H:i:s"),
+        ]);
+
     }
 }

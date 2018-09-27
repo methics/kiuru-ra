@@ -2,7 +2,6 @@
 
 namespace App;
 
-
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 
@@ -354,6 +353,34 @@ class MRegModel
         $body = $this->SendPost($string_json);
         return $body;
 
+    }
+
+    /**
+     * Used to reactivate deactivated user.
+     *
+     * @param $msisdn
+     * @return \Psr\Http\Message\StreamInterface
+     * @throws GuzzleException
+     */
+    public function ReactivateMobileUser($msisdn){
+        $string_json = "
+        {
+            \"MSS_RegistrationReq\": {
+            \"User\": {
+            \"Role\": \"enduser\"
+            },
+            \"UseCase\": {
+                \"Name\": \"mids:ReactivateMobileUser\",
+                \"Inputs\": [{
+                    \"Name\": \"targetmsisdn\",
+                    \"Value\": \"$msisdn\"
+                }]
+            }
+            }
+        }";
+
+        $body = $this->SendPost($string_json);
+        return $body;
     }
 
 }

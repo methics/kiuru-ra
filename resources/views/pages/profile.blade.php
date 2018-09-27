@@ -27,14 +27,20 @@
                     {{ Form::email('email', null, array('class' => 'form-control')) }}
                 </div>
 
-                    <div class="form-group">
-                        {{ Form::label("password","Password") }}
-                        {{ Form::password("password",array("class" => "form-control")) }}
-                    </div>
+                    <a href="#" class="btn btn-danger" onclick="showDiv();" id="pwbutton"> Change Password </a>
+                    <br>
 
-                    <div class="form-group">
-                        {{ Form::label("password","Confirm Password") }}
-                        {{ Form::password("password_confirmation",array("class" => "form-control")) }}
+                    <div class="hidden" id="pwfields">
+                        <br>
+                        <div class="form-group">
+                            {{ Form::label("password","Password") }}
+                            {{ Form::password("password",array("class" => "form-control")) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ Form::label("password","Confirm Password") }}
+                            {{ Form::password("password_confirmation",array("class" => "form-control")) }}
+                        </div>
                     </div>
 
                     {{Form::submit("Update", array("class" => "btn btn-primary")) }}
@@ -47,4 +53,11 @@
 
         </div>
     </div>
+
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+        function showDiv(){
+            $("#pwfields").css({"visibility":"visible"})
+        }
+    </script>
 @endsection

@@ -33,6 +33,6 @@ class LogFailedLogin
         $userID = $event->user->getAuthIdentifier();
         $userName = $event->user->name;
 
-        activity("login")->causedBy($userID)->withProperties(["IP"=>$ip])->log("$userName Failed to login");
+        activity("login")->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName Failed to login");
     }
 }

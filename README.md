@@ -1,3 +1,12 @@
+# Introduction
+
+Introduction text,,..
+
+# Clone this repository
+
+    git clone https://github.com/methics/mobileid-php-ra.git
+
+
 # Installing
 
 Laravel requirements
@@ -15,7 +24,34 @@ Laravel installation happens through cloning & composer install.
 Note: you should configure your web server's document 
 / web root to be the public directory: kiuru-ra/public
     
-        
+Laravel docs for more help: https://laravel.com/docs/5.7
+
+You need a database for this application. Supported databases for Laravel: MySQL, PostgreSQL, SQLite, SQL Server
+
+## Environment files
+
+    cp .env.example .env
+    
+
+Add needed values in .env:
+
+    DB_HOST
+    DB_PORT
+    DB_USERNAME
+    DB_PASSWORD
+    
+    API_URL
+    API_USER
+    API_PASS     
+    
+    ADMIN_EMAIL
+    ADMIN_USER
+    ADMIN_PASS
+
+
+    
+ADMIN_USER and ADMIN_PASS are used to create the first authenticated user, which you need
+in order to control mobileid-php-ra. admin_email and password are used for login.
 
 ## Composer
 
@@ -36,27 +72,6 @@ https://nodejs.org/en/download/package-manager/
     npm install
     
 
-## Environment files
-
-    cp .env.example .env
-    
-
-Add needed values in .env:
-
-    DB_HOST
-    DB_PORT
-    DB_USERNAME
-    DB_PASSWORD
-    
-    API_URL
-    API_USER
-    API_PASS     
-    
-    ADMIN_USER
-    ADMIN_PASS
-    
-ADMIN_USER and ADMIN_PASS are used to create the first authenticated user, which you need
-in order to control kiuru-ra
     
 More about dotenv: https://github.com/motdotla/dotenv
 
@@ -64,8 +79,17 @@ More about dotenv: https://github.com/motdotla/dotenv
   
       php artisan key:generate    
 
+## Correct file permissions
+Laravel requires storage folder to be writeable. 
+https://laracasts.com/discuss/channels/general-discussion/laravel-framework-file-permission-security
+
+Depending on your setup, everything should work with:
+
+    sudo chgrp -R www-data storage bootstrap/cache
+    sudo chmod -R ug+rwx storage bootstrap/cache
+
 ## Database
-You need to create a new database for kiuru-ra
+You need to create a new database for mobileid-php-ra
 
     create database kiuru_ra;
 

@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-methics fixed-top">
+<nav class="navbar navbar-expand-md navbar-custom fixed-top">
     <a class="navbar-brand" href="/"><img src="{{asset('images/methics_logo.png')}}"> </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -16,7 +16,7 @@
                 <a class="nav-link" href="/lookup">Lookup</a>
             </li>
 
-            @role("kiuru-ra-admin")
+            @role("ra-admin")
                 <li>
                     <a class="nav-link" href="/users">Admin</a>
                 </li>
@@ -38,7 +38,15 @@
                         @endguest
 
                         @auth
-                            {{Auth::user()->name}}
+                            <?php
+                                $session = session("mobileidlogin");
+                                if($session == "true"){
+                                    echo session("msisdn");
+                                }else{
+                                   echo Auth::user()->name;
+                                }
+                            ?>
+
                         @endauth
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">

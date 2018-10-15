@@ -27,8 +27,8 @@
                     {{ Form::email('email', null, array('class' => 'form-control')) }}
                 </div>
 
-                    <a href="#" class="btn btn-danger" onclick="showDiv();" id="pwbutton"> Change Password </a>
-                    <br>
+                    <a href="#" class="btn btn-warning" onclick="showDiv();" id="pwbutton"> Change Password </a>
+                    <br><br>
 
                     <div class="hidden" id="pwfields">
                         <br>
@@ -56,8 +56,15 @@
 
     <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     <script>
-        function showDiv(){
-            $("#pwfields").css({"visibility":"visible"})
-        }
+
+
+        $(document).ready(function(){
+            $("#pwfields").hide();
+
+            $("#pwbutton").click(function(){
+                $("#pwfields").toggle();
+            });
+        });
+
     </script>
 @endsection

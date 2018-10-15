@@ -104,7 +104,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) {
+
+
+    public function update2(Request $request, $id) {
         $user = User::findOrFail($id); //Get role specified by id
 
         $password = $request->input("password");
@@ -131,11 +133,58 @@ class UserController extends Controller
             $user->roles()->sync($roles);  //If one or more role is selected associate user to roles
         }
         else {
-            $user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
+            //$user->roles()->detach(); //If no role is selected remove exisiting role associated to a user
         }
         return redirect()->route('users.index')
             ->with('flash_message',
                 'User successfully edited.');
+    }
+
+
+    public function update(Request $request, $id){
+        $user = User::findOrFail($id);
+        $password  = $request->input("password");
+        $password2 = $request->input("password_confirmation");
+
+        if(isset($password) && isset($password2)){
+            $this->validate($request,[
+                "name"  => "required|max:120",
+                "email" => "required|email|unique:users"
+            ]);
+
+            if(!$password == $password2){
+                return redirect()->route("users.index")
+                    ->with("flash_message","Passwords didnt match");
+            }
+
+            $name = $request->input("name");
+            $email = $request->input("email");
+
+            //$input = $request->only("name","email","password");
+            $roles = $request["roles"];
+
+            //$user->fill($input)->save();
+            DB::table("users")
+                ->where("id",$id)
+                ->update(["name" => $name, "email" => $email,"password"=>$password]);
+
+            if(isset($roles)){
+                $user->roles()->sync($roles);
+            }else{
+                //$user->roles()->detach();
+            }
+
+            redirect()->route("users.index")
+                ->with("flash_message","User updated");
+
+        }else{
+            redirect()->route("users.edit")
+                ->with("flash_message","No passwords");
+        }
+
+
+
+
     }
 
     /**

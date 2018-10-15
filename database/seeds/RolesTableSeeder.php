@@ -14,13 +14,13 @@ class RolesTableSeeder extends Seeder
 
         DB::table("roles")->insert([
             "id"                => 1,
-            "name"              => "kiuru-ra-admin",
+            "name"              => "ra-admin",
             "guard_name"        => "web",
 
         ]);
         DB::table("roles")->insert([
             "id"                => 2,
-            "name"              => "kiuru-ra-user",
+            "name"              => "ra-user",
             "guard_name"        => "web",
         ]);
 
@@ -35,6 +35,17 @@ class RolesTableSeeder extends Seeder
             "model_type"           => "App\User",
             "model_id"             => 2,
         ]);
+        DB::table("model_has_roles")->insert([
+            "role_id"               => 2,
+            "model_type"            => "App\User",
+            "model_id"              => 3,
+        ]);
+        DB::table("model_has_roles")->insert([
+            "role_id"               => 1,
+            "model_type"            => "App\User",
+            "model_id"              => 4,
+        ]);
+
 
         DB::table("role_has_permissions")->insert([
             "permission_id"             => 1,

@@ -2,6 +2,7 @@
 
 
 namespace App\Http\Controllers;
+use App\Jobs\ActivateMobileUser;
 use Session;
 use Illuminate\Http\Request;
 
@@ -11,6 +12,10 @@ use Redirect;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Auth;
+use Validator;
+use Illuminate\Support\Facades\Input;
+Use Queue;
+
 
 class MRegController extends Controller
 {
@@ -62,6 +67,7 @@ class MRegController extends Controller
      */
     public function LookupUser(Request $request){
 
+
         $this->validate($request,[
             "msisdn" => "required",
         ]);
@@ -95,16 +101,53 @@ class MRegController extends Controller
             }
         }
 
-        //For logging activity
-        $ip = $_SERVER["REMOTE_ADDR"];
-
-        $userID     = Auth::user()->id;
-        $userName   = Auth::user()->name;
-        activity("lookup")->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName looked up $msisdn");
-
+        $this->ActivityLogger("lookup","looked up",$msisdn);
 
         $data = array("fname"=>"$givenName","surname"=>"$surName","msisdn"=>"$msisdn","state"=>"$state","country"=>$country,"lang"=>$lang);
         return view("pages.userinfo",["data" => $data]);
+    }
+
+    /**
+     * Lookupuser GET method
+     *
+     * @param $msisdn
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function LookupUserGET($msisdn){
+
+        $data = $this->GetUserDataByMsisdn($msisdn);
+
+        if($this->ErrorOrNot($data) == true){
+            return Redirect::back()->withErrors(["this MSISDN doesnt exist", "MSISDN doesnt exist"])->withInput();
+        }
+
+        $array = json_decode($data,true);
+
+        foreach($array["MSS_RegistrationResp"]["UseCase"]["Outputs"] as $key=>$val){
+            foreach($val as $k=>$v){
+                if($v == "http://mss.ficom.fi/TS102204/v1.0.0/PersonID#givenName" || $v == "GivenName"){
+                    $givenName = next($val);
+                }
+                if($v == "http://mss.ficom.fi/TS102204/v1.0.0/PersonID#surName" || $v == "Surname"){
+                    $surName = last($val);
+                }
+                if($v == "State"){
+                    $state = last($val);
+                }
+                if($v == "Country"){
+                    $country = last($val);
+                }
+                if($v == "Language"){
+                    $lang = last($val);
+                }
+            }
+        }
+
+        $this->ActivityLogger("lookup","looked up",$msisdn);
+
+        $data = array("fname"=>"$givenName","surname"=>"$surName","msisdn"=>"$msisdn","state"=>"$state","country"=>$country,"lang"=>$lang);
+        return view("pages.userinfo",["data" => $data]);
+
     }
 
     /**
@@ -167,18 +210,11 @@ class MRegController extends Controller
 
         if($this->ErrorOrNot($data) == false){
 
-            //For logging activity
-            $ip = $_SERVER["REMOTE_ADDR"];
+            $this->ActivityLogger("deactivatemobileuser","deactivated",$msisdn);
 
-            $userID     = Auth::user()->id;
-            $userName   = Auth::user()->name;
-            activity("deactivatemobileuser")->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName deactivated $msisdn");
-
-
-
-            return view("pages.lookup");
+            return response()->json(array("msg" => "Deactivation succesful"),200);
         }else{
-            return Redirect::back()->withErrors(["Error deactivating user", "Error deactivating user"]);
+            return response()->json(array("msg" => "Deactivation unsuccesful"),200);
         }
     }
 
@@ -202,12 +238,13 @@ class MRegController extends Controller
         }
 
         if($this->ErrorOrNot($data) == false){
-            return response()->json(array("msg" => $msg), 200);
+            return response()->json(array("msg" => "Mobile ID test succeeded"), 200);
         }else{
             return response()->json(array("msg" => $msg), 200);
         }
 
     }
+
 
     /**
      * Creates a mobile user. This method includes a config containing
@@ -221,61 +258,66 @@ class MRegController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function CreateMobileUser(Request $request){
-
         $cfg = config("registration.RequiredFields");
         $count = count($cfg);
 
         $array = array();//for form input validation
         $info = array();//passing input to view
 
+        $formdata = $request->input("formdata");
+
+        $values = array();
+        parse_str($formdata,$values);
+
+        $msisdn = $values["msisdn"];
+
 
         for($i = 0; $i < $count; $i++){
-           $first = $cfg[$i]["formID"];
-           $second = $cfg[$i]["options"];
+            $first = $cfg[$i]["formID"];
+            $second = $cfg[$i]["options"];
 
-           $array +=[$first => $second];//for validation
-           $info +=[$i => $request->input($first)];
+            $array +=[$first => $second];//for validation
+            $info +=[$i => $values[$first]];
         }
 
-        $this->validate($request,$array);
-        $msisdn = $request->input("msisdn");
 
-
-        //For logging activity
-        $ip = $_SERVER["REMOTE_ADDR"];
-
-        $userID     = Auth::user()->id;
-        $userName   = Auth::user()->name;
-        activity("createmobileuser")->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName created mobile user $msisdn");
-
+        //$this->validate($request,$array);
 
 
         if($this->CheckIfSimExists($msisdn) !== true){
 
-            return Redirect::back()->withErrors(["SIM card doesnt exists", ""])->withInput();
-        }
+            return response()->json(array("msg" => "SIM card doesn't exists"), 200);
 
+        }
         if($this->CheckIfUserExists($msisdn) !== true){
-            return redirect("edituser/$msisdn")->with("msg","User already exists!");
-        }else{
+            return response()->json(array("msg" => "User exists", "msisdn" => $msisdn), 200);
+
+        }else {
 
             //create user
             $model = new MRegModel();
             $data = $model->CreateMobileUser($info);
             $obj = json_decode($data);
 
-            if(isset($obj->Fault->Reason)){
+            if (isset($obj->Fault->Reason)) {
                 $error = $obj->Fault->Reason;
-                return Redirect::back()->withErrors(["ERROR : $error", "ERROR: Couldnt create mobile user"])->withInput();
-            }else{
+                return response()->json(array("msg" => $error), 200);
+
+            } else {
                 $obj = $this->ActivateMobileUser($msisdn);
 
-                if($this->ErrorOrNot($obj) !== false){
-                    return view("pages.index")->with("msg","ERROR: Activation failed");
+                if ($this->ErrorOrNot($obj) !== false) {
+                   // return view("pages.index")->with("msg", "ERROR: Activation failed");
+                    return response()->json(array("msg" => "activation failed"), 200);
+
                 }
             }
-            return view("pages.index")->with("msg","Created user for MSISDN: {$msisdn} and started activation");
+            $this->ActivityLogger("createmobileuser", "created user", $msisdn);
+
         }
+        return response()->json(array("msg" => "success", "msisdn" => $msisdn), 200);
+
+
     }
 
     /**
@@ -312,12 +354,7 @@ class MRegController extends Controller
             }
         }
 
-        //For logging activity
-        $ip = $_SERVER["REMOTE_ADDR"];
-
-        $userID     = Auth::user()->id;
-        $userName   = Auth::user()->name;
-        activity("editmobileuser")->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName edited $msisdn information");
+        $this->ActivityLogger("editmobileuser","edited",$msisdn);
 
         return view("pages.updateuser",["data" => $data])->with("cfg",$cfg);
     }
@@ -354,24 +391,23 @@ class MRegController extends Controller
             $array +=[$first => $second];//for validation
 
             $info +=[$i => $request->input($first)];
+
         }
+
 
         $this->validate($request,$array);
         $msisdn = $request->input("msisdn");
 
-        //For logging activity
-        $ip = $_SERVER["REMOTE_ADDR"];
 
-        $userID     = Auth::user()->id;
-        $userName   = Auth::user()->name;
-        activity()->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName updated $msisdn information");
+
+        $this->ActivityLogger("update","updated",$msisdn);
 
         $model = new MRegModel();
         $data = $model->UpdateUser($info);
         $obj = json_decode($data);
 
         if(isset($obj->Fault->Reason)){
-            $error = $obj->Fault->reason;
+            $error = $obj->Fault->Reason;
             return Redirect::back()->withErrors(["ERROR : $error", "ERROR: $error"])->withInput();
         }else{
             return Redirect::back()->with("msg","User succesfully edited!");
@@ -390,12 +426,9 @@ class MRegController extends Controller
 
         $obj = json_decode($data);
 
-        //For logging activity
-        $ip = $_SERVER["REMOTE_ADDR"];
+        //log activity
+        $this->ActivityLogger("deletemobileuser","deleted",$msisdn);
 
-        $userID     = Auth::user()->id;
-        $userName   = Auth::user()->name;
-        activity("deletemobileuser")->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName deleted mobile user $msisdn");
 
         if(isset($obj->Fault->Reason)){
             return view("pages.lookup")->with("msg","Could not delete user");
@@ -404,6 +437,13 @@ class MRegController extends Controller
         }
     }
 
+    /**
+     * Used for reactivating mobile user. Returns JSON because of AJAX calls.
+     *
+     * @param $msisdn
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function ReactivateMobileUser($msisdn){
 
         $model = new MRegModel();
@@ -411,21 +451,46 @@ class MRegController extends Controller
 
         $obj = json_decode($data);
 
-        //For logging activity
-        $ip = $_SERVER["REMOTE_ADDR"];
-
-        $userID     = Auth::user()->id;
-        $userName   = Auth::user()->name;
-        activity("reactivatemobileuser")->causedBy($userID)->withProperties(["IP"=>$ip,"user"=>$userName])->log("$userName Reactivated $msisdn");
-
+        //log activity
+        $this->ActivityLogger("reactivatemobileuser","reactivated",$msisdn);
         if(isset($obj->Fault->Reason)){
             $error = $obj->Fault->Reason;
-            return Redirect::back()->withErrors(["$error", "$error"]);
+            return response()->json(array("msg" => $error),200);
         }else{
-            return view("pages.lookup")->with("msg","{$msisdn} reactivated succesfully!");
+            return response()->json(array("msg" => "{$msisdn} reactivated successfully"), 200);
+        }
+    }
+
+    /**
+     * Logs activities to database. $log is the "logname" used to filter logs in Logs admin area.
+     * $action is the message inserted, example: user DELETED 358010001.
+     * $target is the MSISDN in question.
+     *
+     * Logs IP-addresses
+     *
+     * @param $log
+     * @param $action
+     * @param $target
+     *
+     */
+    public function ActivityLogger($log, $action, $target){
+
+        $ip = $_SERVER["REMOTE_ADDR"];
+        $session = session("mobileidlogin");
+        $userID = Auth::user()->id;
+
+        if(isset($session) && $session == true){
+            $userName = session("msisdn");
+        }else{
+            $userName = Auth::user()->name;
         }
 
 
+        activity($log)
+            ->causedBy($userID)
+            ->withProperties(["IP"=>$ip,"user"=>$userName])
+            ->log("$userName $action $target");
     }
+
 
 }

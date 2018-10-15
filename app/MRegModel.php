@@ -109,6 +109,10 @@ class MRegModel
             $val = $data->$i;
             $name = $cfg[$i]["mregname"];
 
+            if($name == "IMSI" && empty($val)){
+                continue;
+            }
+
             $loopstring = "
                 {
                 \"Name\": \"$name\",
@@ -125,6 +129,7 @@ class MRegModel
         }
 
         $string_json = $string_start . $string_mid . $string_end;
+
 
         $body = $this->SendPost($string_json);
         return $body;
@@ -304,6 +309,10 @@ class MRegModel
             $val = $data->$i;
             $name = $cfg[$i]["mregname"];
 
+            if($name == "IMSI" && empty($val)){
+                continue;
+            }
+
             $loopstring = "
                 {
                 \"Name\": \"$name\",
@@ -381,6 +390,36 @@ class MRegModel
 
         $body = $this->SendPost($string_json);
         return $body;
+    }
+
+    //TODO: use config after the basics work & docs
+    public function MobileIDLogin($msisdn,$randomcode){
+
+        $string_json = "{
+            \"MSS_SignatureReq\": {
+                \"AP_Info\": {},
+                \"MobileUser\": {
+                    \"MSISDN\": \"$msisdn\"
+                },
+                \"MessagingMode\": \"synch\",
+                \"DataToBeSigned\": {
+                    \"MimeType\": \"text/plain\",
+                    \"Encoding\": \"UTF-8\",
+                    \"Data\": \"RA Login $randomcode\"
+                },
+                \"SignatureProfile\": \"http://alauda.mobi/digitalSignature\",
+                \"AdditionalServices\": [{
+                    \"Description\": \"http://uri.etsi.org/TS102204/v1.1.2#validate\"
+                    },{
+                    \"Description\": \"http://www.methics.fi/KiuruMSSP/v5.0.0#role\"
+                }]
+            }
+        }";
+
+
+        $body = $this->SendPost($string_json);
+        return $body;
+
     }
 
 }

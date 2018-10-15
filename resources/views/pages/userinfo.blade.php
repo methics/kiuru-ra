@@ -17,6 +17,9 @@
                 @if(isset($msg))
                     <p class="alert alert-info">{{$msg}}</p>
                 @endif
+                <div class="messages">
+
+                </div>
 
             <h2>User info</h2>
 
@@ -42,7 +45,7 @@
                     </tr>
                     <tr>
                         <th scope="row">State</th>
-                        <td>{{$state}}</td>
+                        <td class="state">{{$state}}</td>
                     </tr>
                     <tr>
                         <th scope="row">Country</th>
@@ -53,21 +56,22 @@
                         <td>{{$lang}}</td>
                     </tr>
 
+
                 </tbody>
             </table>
 
             <?php
             if($state == "ACTIVE"){
-                echo "<a href='/deactivate/{$msisdn}' class='btn btn-primary btn-lg' role='button'>Deactivate</a>";
+                echo "<button type='button' id='deactivate' class='btn btn-primary' role='button'> Deactivate </button>";
             }else{
-                echo "<a href='/reactivate/{$msisdn}' class='btn btn-primary btn-lg' role='button'>Reactivate</a>";
+                echo "<button type='button' id='activate' class='btn btn-primary' role='button'> Activate </button>";
             }
             ?>
 
-            <button type="button" id="test" class="btn btn-primary btn-lg" role="button">Test</button>
-            <a href="edituser/{{$msisdn}}" class="btn btn-primary btn-lg">Edit</a>
-            <a href="/lookup" class="btn btn-primary btn-lg" role="button">Back</a>
-            <a href="deleteuser/{{$msisdn}}" class="btn btn-danger btn-lg confirm" onclick="return confirm('Are you sure?')" id="delete">Delete</a>
+            <button type="button" id="test" class="btn btn-primary" role="button">Test</button>
+            <a href="/edituser/{{$msisdn}}" class="btn btn-primary">Edit</a>
+            <a href="/lookup" class="btn btn-primary" role="button">Back</a>
+            <a href="/deleteuser/{{$msisdn}}" class="btn btn-danger confirm" onclick="return confirm('Are you sure?')" id="delete">Delete</a>
 
 
                 <script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -83,7 +87,78 @@
                                     type: 'GET',
                                     data: { _token: '{{ csrf_token() }}' },
                                     success:function(data){
-                                        alert(data.msg);
+                                        var messages = $(".messages");
+
+                                        var html = "<p class='alert alert-info'>" + data.msg + "</p>";
+                                        $(messages).html(html);
+                                    }
+                                });
+
+                            });
+
+                        });
+                    }(jQuery));
+                </script>
+
+                <script>
+                    (function ($) {
+                        $(document).ready(function() {
+                            var url = "<?php echo "/deactivate/" . $msisdn; ?>";
+
+                            $(document).on('click',"#deactivate", function() {
+
+                                var messages = $(".messages");
+                                var loader = "<div class=\"loader\">Loading...</div>";
+
+                                $(messages).html(loader);
+
+                                $.ajax({
+                                    url,
+                                    type: 'GET',
+                                    data: { _token: '{{ csrf_token() }}' },
+                                    success:function(data){
+
+                                        var html = "<p class='alert alert-info'>" + data.msg + "</p>";
+                                        $(messages).html(html);
+
+                                        $(".state").html("INACTIVE");
+
+                                        $("#deactivate").replaceWith("<button type='button' id='activate' class='btn btn-primary' role='button'>Activate</button>");
+                                    }
+                                });
+
+                            });
+
+                        });
+                    }(jQuery));
+                </script>
+
+                <script>
+                    (function ($) {
+                        $(document).ready(function() {
+                            var url = "<?php echo "/reactivate/" . $msisdn; ?>"
+
+                            $(document).on('click',"#activate", function() {
+
+                                var messages = $(".messages");
+                                var loader = "<div class=\"loader\">Loading...</div>";
+
+                                $(messages).html(loader);
+
+
+                                $.ajax({
+                                    url,
+                                    type: 'GET',
+                                    data: { _token: '{{ csrf_token() }}' },
+                                    success:function(data){
+
+                                        var html = "<p class='alert alert-info'>" + data.msg + "</p>";
+                                        $(messages).html(html);
+
+                                        $(".state").html("ACTIVE");
+
+                                        $("#activate").replaceWith("<button type='button' id='deactivate' class='btn btn-primary' role='button'>Deactivate</button>");
+
                                     }
                                 });
 

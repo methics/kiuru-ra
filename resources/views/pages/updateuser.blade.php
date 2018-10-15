@@ -40,7 +40,14 @@
                 <?php
                     $formID = $cfg[$i]["formID"];
                     $mregname = strtolower($cfg[$i]["mregname"]); //for case insensitive array thingy
-                    $placeholder = $data[$mregname];
+
+                        if(isset($data[$mregname])){
+                            $placeholder = $data[$mregname];
+                        }else{
+                            $placeholder = " ";
+                        }
+
+
                 ?>
 
                 <div class="form-group form-control-xl">
@@ -48,7 +55,6 @@
 
                     <?php if(strpos($cfg[$i]["options"],"required") !== false){
                         echo "<span class='asterisk'>*</span>";
-                        //todo: MSISDN cant be changed with this, so it should be readonly
                     }?>
 
                     @if($errors->has($formID))
@@ -67,9 +73,17 @@
             {{Form::submit("Submit",["class" => "btn btn-primary"])}}
             {!! Form::close() !!}
 
-        </div>
+            <button class="btn btn-primary" onclick="goBack()">Back</button>
+
+                    </div>
 
 
     </div>
+
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+    </script>
 
 @endsection

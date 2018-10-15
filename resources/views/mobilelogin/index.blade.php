@@ -15,10 +15,7 @@
             @endif
 
 
-            <h1>Mobileid-php-ra</h1>
 
-            <p>Homepage could contain information about mobileid-php-ra, or maybe about
-            the company using this product.</p>
 
 
         </div>

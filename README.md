@@ -2,10 +2,6 @@
 
 Introduction text,,..
 
-# Clone this repository
-
-    git clone https://github.com/methics/mobileid-php-ra.git
-
 
 # Installing
 
@@ -22,11 +18,18 @@ Laravel requirements
     
 Laravel installation happens through cloning & composer install.    
 Note: you should configure your web server's document 
-/ web root to be the public directory: kiuru-ra/public
+/ web root to be the public directory: mobileid-php-ra/public
     
 Laravel docs for more help: https://laravel.com/docs/5.7
 
 You need a database for this application. Supported databases for Laravel: MySQL, PostgreSQL, SQLite, SQL Server
+
+# Clone this repository
+
+    git clone https://github.com/methics/mobileid-php-ra.git
+
+
+
 
 ## Environment files
 
@@ -53,6 +56,9 @@ Add needed values in .env:
 ADMIN_USER and ADMIN_PASS are used to create the first authenticated user, which you need
 in order to control mobileid-php-ra. admin_email and password are used for login.
 
+    
+More about dotenv: https://github.com/motdotla/dotenv
+
 ## Composer
 
 https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx
@@ -61,7 +67,7 @@ Composer is a tool for dependency management in PHP.
 It allows you to declare the libraries your project depends 
 on and it will manage (install/update) them for you.
 
-After cloning kiuru-ra do:
+After cloning mobileid-php-ra do:
     
     composer install
     
@@ -72,8 +78,7 @@ https://nodejs.org/en/download/package-manager/
     npm install
     
 
-    
-More about dotenv: https://github.com/motdotla/dotenv
+
 
 ## Generate app encryption key:
   
@@ -91,7 +96,7 @@ Depending on your setup, everything should work with:
 ## Database
 You need to create a new database for mobileid-php-ra
 
-    create database kiuru_ra;
+    create database mobileid-php-ra;
 
 ## Build database tables & seed tables
 go to project folder and:

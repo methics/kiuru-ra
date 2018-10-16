@@ -24,6 +24,7 @@ Laravel docs for more help: https://laravel.com/docs/5.7
 
 You need a database for this application. Supported databases for Laravel: MySQL, PostgreSQL, SQLite, SQL Server
 
+Apache/nginx is also needed.
 # Clone this repository
 
     git clone https://github.com/methics/mobileid-php-ra.git
@@ -105,4 +106,5 @@ go to project folder and:
     php artisan db:seed
     
     
+After successful install, open your browser and go to your servers root (example http://localhost)
     

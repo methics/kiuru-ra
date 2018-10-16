@@ -9,11 +9,17 @@ use Redirect;
 
 class MobileIDController extends Controller
 {
+    /**
+     * Used for Mobile ID authentication.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function MobileIDLogin(Request $request){
 
         $this->validate($request,[
             "msisdn" => "required",
-            "randomcode" => "required",
+            "randomcode" => "required",//randomcode is a hidden input created when pressing Login button
         ]);
 
         $msisdn     = $request->input("msisdn");

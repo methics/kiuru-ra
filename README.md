@@ -89,10 +89,7 @@ https://nodejs.org/en/download/package-manager/
 Laravel requires storage folder to be writeable. 
 https://laracasts.com/discuss/channels/general-discussion/laravel-framework-file-permission-security
 
-Depending on your setup, everything should work with:
-
-    sudo chgrp -R www-data storage bootstrap/cache
-    sudo chmod -R ug+rwx storage bootstrap/cache
+Permissions depend heavily on your setup.
 
 ## Database
 You need to create a new database for mobileid-php-ra

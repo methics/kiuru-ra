@@ -43,7 +43,7 @@ class UsersTableSeeder extends Seeder
             "id"             => 3,
             "name"           => "mobileiduser",
             "email"          => "mobileiduser@mobileiduser.com",
-            "password"       => bcrypt("password"), //customize this
+            "password"       => "LOGINNOTALLOWED", //customize this
             "created_at"     => \Carbon\Carbon::now()->format("Y-m-d H:i:s"),
         ]);
 
@@ -52,7 +52,7 @@ class UsersTableSeeder extends Seeder
             "id"             => 4,
             "name"           => "mobileidadmin",
             "email"          => "mobileidadmin@admin.com",
-            "password"       => bcrypt("password"), //customize this
+            "password"       => "LOGINNOTALLOWED", //customize this
             "created_at"     => \Carbon\Carbon::now()->format("Y-m-d H:i:s"),
         ]);
 

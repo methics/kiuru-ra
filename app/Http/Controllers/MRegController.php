@@ -108,7 +108,7 @@ class MRegController extends Controller
     }
 
     /**
-     * Lookupuser GET method
+     * Lookupuser GET method.
      *
      * @param $msisdn
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -181,7 +181,7 @@ class MRegController extends Controller
     }
 
     /**
-     * Check if SIM card has been made. Kiuru-RA doesn't create sim cards
+     * Check if SIM card has been made. mobileid-php-ra doesn't create sim cards
      *
      * @param $msisdn
      * @return bool
@@ -198,7 +198,7 @@ class MRegController extends Controller
     }
 
     /**
-     * Changes user state to INACTIVE.
+     * Changes user state to INACTIVE. Returns a JSON response.
      *
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -264,15 +264,16 @@ class MRegController extends Controller
         $array = array();//for form input validation
         $info = array();//passing input to view
 
-        $formdata = $request->input("formdata");
+        $formdata = $request->input("formdata"); //gets the formdata variable from serialize() & ajax.
 
         $values = array();
-        parse_str($formdata,$values);
+        parse_str($formdata,$values); //serialize() creates a "GET" string, parses them
 
         $msisdn = $values["msisdn"];
 
 
         for($i = 0; $i < $count; $i++){
+            //first and second are for form validation, from config. Example: 'msisdn' => 'required',
             $first = $cfg[$i]["formID"];
             $second = $cfg[$i]["options"];
 
@@ -280,7 +281,7 @@ class MRegController extends Controller
             $info +=[$i => $values[$first]];
         }
 
-
+        //if using ajax, you need to check for validation, and on error, return a json response to ajax, and handle validation with JS
         //$this->validate($request,$array);
 
 
@@ -307,9 +308,7 @@ class MRegController extends Controller
                 $obj = $this->ActivateMobileUser($msisdn);
 
                 if ($this->ErrorOrNot($obj) !== false) {
-                   // return view("pages.index")->with("msg", "ERROR: Activation failed");
                     return response()->json(array("msg" => "activation failed"), 200);
-
                 }
             }
             $this->ActivityLogger("createmobileuser", "created user", $msisdn);
@@ -391,7 +390,6 @@ class MRegController extends Controller
             $array +=[$first => $second];//for validation
 
             $info +=[$i => $request->input($first)];
-
         }
 
 

@@ -392,7 +392,6 @@ class MRegModel
         return $body;
     }
 
-    //TODO: use config after the basics work & docs
     public function MobileIDLogin($msisdn,$randomcode){
 
         $string_json = "{

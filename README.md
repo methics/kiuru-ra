@@ -1,6 +1,6 @@
 # Introduction
 
-Introduction text,,..
+MobileID-PHP-RA is a simple PHP Registration Authority tool for provisioning accounts on Kiuru MSSP.
 
 
 # Installing
